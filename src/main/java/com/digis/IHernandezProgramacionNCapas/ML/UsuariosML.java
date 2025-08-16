@@ -44,6 +44,7 @@ public class UsuariosML{
         this.Curp = Curp;
     }
 
+
     public int getIdUsuario() {
         return IdUsuario;
     }

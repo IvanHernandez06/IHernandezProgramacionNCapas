@@ -241,4 +241,101 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
 
     }
 
+    @Override
+    public Result GetId(int idUsuario) {
+        Result result = new Result();
+        try {
+            result.correct = jdbcTemplate.execute("CALL UsuariosGetId (?,?)",
+                    (CallableStatementCallback<Boolean>) callablestatement -> {
+                        callablestatement.registerOutParameter(1, java.sql.Types.REF_CURSOR);
+                        callablestatement.setInt(2, idUsuario);
+                        callablestatement.execute();
+
+                        ResultSet resultSet = (ResultSet) callablestatement.getObject(1);
+
+                        if (resultSet.next()) {
+                            UsuariosML usuario = new UsuariosML();
+
+                            usuario.setIdUsuario(resultSet.getInt("IdUsuario"));
+                            usuario.setUsername(resultSet.getString("Username"));
+                            usuario.setNombre(resultSet.getString("Nombre"));
+                            usuario.setApellidoPaterno(resultSet.getString("ApellidoPaterno"));
+                            usuario.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
+                            usuario.setEmail(resultSet.getString("Email"));
+                            usuario.setPassword(resultSet.getString("Password"));
+                            usuario.setFechaNacimiento(resultSet.getString("FechaNacimiento"));
+                            usuario.setSexo(resultSet.getString("Sexo").charAt(0));
+                            usuario.setTelefono(resultSet.getString("Telefono"));
+                            usuario.setCelular(resultSet.getString("Celular"));
+                            usuario.setCurp(resultSet.getString("Curp"));
+
+                            result.object = usuario;
+                            result.correct = true;
+
+                        }
+
+                        return false;
+                    });
+
+        } catch (Exception e) {
+            result.correct = false;
+            result.errorMenssage = e.getLocalizedMessage();
+            result.e = e;
+        }
+        return result;
+    }
+    
+    
+    
+    
+    public Result Update(int idUsuario){
+        Result result = new Result();
+        try {
+            result.correct = jdbcTemplate.execute("CALL UpdateUsuarios (?,?)",
+                    (CallableStatementCallback<Boolean>) callablestatement -> {
+                        callablestatement.registerOutParameter(1, java.sql.Types.REF_CURSOR);
+                        callablestatement.setInt(2, idUsuario);
+                        callablestatement.execute();
+
+                        ResultSet resultSet = (ResultSet) callablestatement.getObject(1);
+
+                        if (resultSet.next()) {
+                            UsuariosML usuario = new UsuariosML();
+
+                            usuario.setIdUsuario(resultSet.getInt("IdUsuario"));
+                            usuario.setUsername(resultSet.getString("Username"));
+                            usuario.setNombre(resultSet.getString("Nombre"));
+                            usuario.setApellidoPaterno(resultSet.getString("ApellidoPaterno"));
+                            usuario.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
+                            usuario.setEmail(resultSet.getString("Email"));
+                            usuario.setPassword(resultSet.getString("Password"));
+                            usuario.setFechaNacimiento(resultSet.getString("FechaNacimiento"));
+                            usuario.setSexo(resultSet.getString("Sexo").charAt(0));
+                            usuario.setTelefono(resultSet.getString("Telefono"));
+                            usuario.setCelular(resultSet.getString("Celular"));
+                            usuario.setCurp(resultSet.getString("Curp"));
+
+                            result.object = usuario;
+                            result.correct = true;
+
+                        }
+
+                        return false;
+                    });
+            
+            
+            
+        } catch (Exception e) {
+            result.correct=false;
+            result.errorMenssage= e.getLocalizedMessage();
+            result.e=e;
+            
+        }
+        
+        return result;
+    }
+    
+    
+    
+
 }

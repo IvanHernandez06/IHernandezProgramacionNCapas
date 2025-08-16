@@ -11,4 +11,13 @@ public interface IUsuarioDAO {
     Result GetDatail(int idUsuario);
     
     Result Add(UsuariosML usuario);
+    
+    
+    
+    Result GetId(int idUsuario);
+    
+    Result  Update(int idUsuario);
+    
+    
+    
 }

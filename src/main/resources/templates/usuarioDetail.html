@@ -35,16 +35,23 @@
                                 <span th:text="${usuario.Curp}"></span>
                             </p>
                             <!-- CAMBIO: Botón para editar usuario -->
-                            <a href="@{/usuario/form(tipo='usuario', id=${usuario.idUsuario})}" 
+                            <a th:href="@{/Usuario/formEditable(idUsuario=${usuario.idUsuario})}" 
                                class="btn btn-primary w-100 mb-2">
-                               Editar Usuario
+                                Editar Usuario
                             </a>
 
+
+
                             <!-- CAMBIO: Botón para agregar dirección -->
-                            <a th:href="@{/usuario/form(tipo='agregarDireccion', id=${usuario.idUsuario})}" 
+                            <a th:href="@{/Usuario/formEditable(idUsuario=${usuario.idUsuario}, idDireccion=0)}"
                                class="btn btn-success w-100">
-                               Agregar Dirección
+                                
+                                
+                                
+                                Agregar Dirección
                             </a>
+
+
                         </div>
                     </div>
                 </div>

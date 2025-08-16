@@ -1,14 +1,19 @@
-
 package com.digis.IHernandezProgramacionNCapas.ML;
 
 public class Direccion {
+
     private int IdDireccion;
     private String Calle;
     private String NumInterior;
     private String NumExterior;
-    
+
     public Colonia Colonia;
     public UsuariosML usuario;
+
+    public Direccion() {
+    }
+    
+    
 
     public int getIdDireccion() {
         return IdDireccion;
@@ -49,7 +54,5 @@ public class Direccion {
     public void setColonia(Colonia Colonia) {
         this.Colonia = Colonia;
     }
-    
-    
-   
+
 }

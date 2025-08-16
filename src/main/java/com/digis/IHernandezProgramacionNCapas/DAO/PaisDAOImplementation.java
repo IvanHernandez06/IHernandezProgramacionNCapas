@@ -32,9 +32,12 @@ public class PaisDAOImplementation implements IPais {
                 
                 while (resultSet.next()) {                    
                     
-                    Pais pais = new Pais(
-                            resultSet.getInt("IdPais"), 
-                            resultSet.getString("Nombre"));
+                    Pais pais = new Pais();
+                    pais.setIdPais(resultSet.getInt("IdPais"));
+                    pais.setNombre(resultSet.getString("Nombre"));
+                    
+                    
+                      
                     
                     result.objects.add(pais);
                     

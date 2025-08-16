@@ -35,9 +35,9 @@ public class EstadoDAOImplementation implements IEstadoDAO {
                 
                 while(resultSet.next()){
                     
-                    Estado estado = new Estado(
-                    resultSet.getInt("IdEstado"),
-                    resultSet.getString("Nombre"));
+                    Estado estado = new Estado();
+                    estado.setIdEstado(resultSet.getInt("IdEstado"));
+                    estado.setNombre(resultSet.getString("Nombre"));
                     
                     result.objects.add(estado);
                 }
