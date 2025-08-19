@@ -1,12 +1,10 @@
-
-
 package com.digis.IHernandezProgramacionNCapas.ML;
 
 import java.util.ArrayList;
 import org.springframework.format.annotation.DateTimeFormat;
 
+public class UsuariosML {
 
-public class UsuariosML{
     private int IdUsuario;
     private String Username;
     private String Nombre;
@@ -20,11 +18,17 @@ public class UsuariosML{
     private String Telefono;
     private String Celular;
     private String Curp;
+
+    
+    
+    
+    private String Imagen;//Agregar imagen
+
+    
+    
     
     public RolML RolML;
     public ArrayList<Direccion> Direccion;
-    
-   
 
     public UsuariosML() {
     }
@@ -43,7 +47,6 @@ public class UsuariosML{
         this.Celular = Celular;
         this.Curp = Curp;
     }
-
 
     public int getIdUsuario() {
         return IdUsuario;
@@ -157,8 +160,16 @@ public class UsuariosML{
         this.Direccion = Direccion;
     }
 
-    
-    
-    
-    
+    public String getImagen() {
+
+        return Imagen;
+
+    }
+
+    public void setImagen(String Imagen) {
+
+        this.Imagen = Imagen;
+
+    }
+
 }

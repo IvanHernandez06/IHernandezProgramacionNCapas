@@ -20,7 +20,7 @@ public class DataSourceConfig {
         dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:orcl");
         dataSource.setUsername("IHernandezProgramacionNCapas");
         dataSource.setPassword("password1");
-        //dataSource.setDriverClassName("oracle.jdbc.OracleDriver");
+        dataSource.setDriverClassName("oracle.jdbc.OracleDriver");
         
         return dataSource; 
     }

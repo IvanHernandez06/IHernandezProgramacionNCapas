@@ -16,8 +16,9 @@ public interface IUsuarioDAO {
     
     Result GetId(int idUsuario);
     
-    Result  Update(int idUsuario);
+    Result  Update(UsuariosML usuario);
     
+    Result direccionIdUsuario(int idUsuario);
     
     
 }
