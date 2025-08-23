@@ -13,13 +13,14 @@
         <div class="container">
             <div style="position: relative; height: 20px; left: 1300;margin-top: 25px;">  
                 <a th:href="@{/Usuario/action/{idUsuario}(idUsuario=0)}">
-                <i class="bi bi-person-add"  style="font-size: 4rem;color: black;"></i>
+                    <i class="bi bi-person-add"  style="font-size: 4rem;color: black;"></i>
                 </a>
-                
+
             </div>
             <table class="table table-hover">
                 <thead class="table-dark">
                 <th class="col-1"></th>
+                <th class="col-1">Image</th>
                 <th class="col-2">Nombre</th>
                 <th class="col-5">Contacto</th>
                 <th class="col-4">Dirección</th>
@@ -28,9 +29,19 @@
                     <tr  th:each="usuarios : ${usuarios}">
                         <td>
                             <a th:href="@{/Usuario/action/{idUsuario}(idUsuario = ${usuarios.idUsuario})}"
-                                class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
-                            
+                               class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
+
                             <a class="btn btn-danger"><i class="bi bi-trash3-fill"></i></a></td>
+
+
+                        <td>
+
+                            <img th:src="${usuarios.Imagen != null} 
+                                 ? 'data:image/png;base64,' + ${usuarios.Imagen} 
+                                 : 'https://as2.ftcdn.net/v2/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg'"
+                                 alt="Foto de usuario" width="80" height="80" style="border-radius: 50%;" />
+                        </td>
+
 
                         <td th:text="|${usuarios.Nombre} ${usuarios.ApellidoPaterno} ${usuarios.ApellidoMaterno}|"></td>
                         <td th:utext="|Email: ${usuarios.Email} <p>  

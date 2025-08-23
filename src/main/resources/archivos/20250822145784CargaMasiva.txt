@@ -1,0 +1,2 @@
+JLopez|Juan|Lopez|Cortez|M|Juan@gmail|password|2000/01/01|LOCJ000101|27272716272|2712712717272|1|Calle|22|22|1
+JRamirez|Jesus|Romero|Ramirez|M|Jesus@gmail.com|password|2000/01/01|RORJ000101|21173736363636|31223113232121|1|Calle|22|22|1

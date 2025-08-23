@@ -62,7 +62,8 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
 
                     } else {
                         UsuariosML usuario = new UsuariosML();
-
+                        
+                        usuario.setImagen(resultSet.getString("Imagen"));
                         usuario.setIdUsuario(resultSet.getInt("IdUsuario"));
                         usuario.setUsername(resultSet.getString("Username"));
                         usuario.setNombre(resultSet.getString("NombreUsuario"));
@@ -198,27 +199,29 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
         Result result = new Result();
 
         try {
-            result.correct = jdbcTemplate.execute("CALL usuariodireccionadd (?,?,?,?,?,?,to_date(?,'YYYY/MM/DD'),?,?,?,?,?,?,?,?,?)",
+            result.correct = jdbcTemplate.execute("CALL usuariodireccionadd (?,?,?,?,?,?,?,to_date(?,'YYYY/MM/DD'),?,?,?,?,?,?,?,?,?)",
                     (CallableStatementCallback<Boolean>) callablestatement -> {
 
-                        callablestatement.setString(1, usuario.getUsername());
-                        callablestatement.setString(2, usuario.getNombre());
-                        callablestatement.setString(3, usuario.getApellidoPaterno());
-                        callablestatement.setString(4, usuario.getApellidoMaterno());
-                        callablestatement.setString(5, usuario.getEmail());
-                        callablestatement.setString(6, usuario.getPassword());
+                        
+                        callablestatement.setString(1, usuario.getImagen());
+                        callablestatement.setString(2, usuario.getUsername());
+                        callablestatement.setString(3, usuario.getNombre());
+                        callablestatement.setString(4, usuario.getApellidoPaterno());
+                        callablestatement.setString(5, usuario.getApellidoMaterno());
+                        callablestatement.setString(6, usuario.getEmail());
+                        callablestatement.setString(7, usuario.getPassword());
 
-                        callablestatement.setString(7, usuario.getFechaNacimiento());
-                        callablestatement.setString(8, String.valueOf(usuario.getSexo()));
-                        callablestatement.setString(9, usuario.getTelefono());
-                        callablestatement.setString(10, usuario.getCelular());
-                        callablestatement.setString(11, usuario.getCurp());
-                        callablestatement.setInt(12, usuario.RolML.getIdRol());
+                        callablestatement.setString(8, usuario.getFechaNacimiento());
+                        callablestatement.setString(9, String.valueOf(usuario.getSexo()));
+                        callablestatement.setString(10, usuario.getTelefono());
+                        callablestatement.setString(11, usuario.getCelular());
+                        callablestatement.setString(12, usuario.getCurp());
+                        callablestatement.setInt(13, usuario.RolML.getIdRol());
 
-                        callablestatement.setString(13, usuario.Direccion.get(0).getCalle());
-                        callablestatement.setString(14, usuario.Direccion.get(0).getNumInterior());
-                        callablestatement.setString(15, usuario.Direccion.get(0).getNumExterior());
-                        callablestatement.setInt(16, usuario.Direccion.get(0).Colonia.getIdColonia());
+                        callablestatement.setString(14, usuario.Direccion.get(0).getCalle());
+                        callablestatement.setString(15, usuario.Direccion.get(0).getNumInterior());
+                        callablestatement.setString(16, usuario.Direccion.get(0).getNumExterior());
+                        callablestatement.setInt(17, usuario.Direccion.get(0).Colonia.getIdColonia());
 
                         int isCorrect = callablestatement.executeUpdate();
 

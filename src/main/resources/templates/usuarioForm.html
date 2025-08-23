@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Detalles de Usuario</title>
@@ -30,204 +30,209 @@
 
                     <form  method="post" th:object="${Usuario}" th:action="@{/Usuario/usuarioForm}" enctype="multipart/form-data">
 
-                        <input type="hidden" th:field="*{idUsuario}">
-                        <input type="hidden" th:field="*{Direccion[0].IdDireccion}">
+                         <input type="hidden" th:field="*{idUsuario}">
+                        <input type="hidden" th:field="*{Direccion[0].idDireccion}">
 
                         <div  th:if="*{(idUsuario == 0 && Direccion[0].IdDireccion == 0)
                               || (idUsuario > 0 && Direccion[0].IdDireccion == -1)}" >
                             <h3 class="text-center mb-4">Detalles de Usuario</h3>
 
 
+                            <div class="card p-3 w-100 h-100">
+                                <label for="imagenFile" class="form-label fw-bold">Imagen</label>
+                                <input type="file" class="form-control mb-2" name="imagenFile" id="imagenFile" onchange="previewImage()">
 
-                            <div class="col-md-8">
-
-
-                                <div class="card p-3 w-100 h-100">
-                                    <label for="imagenFile" class="form-label fw-bold">Imagen</label>
-                                 <input type="file" class="form-control mb-2" id="imagenFile" onchange="previewImage()">
-                    
-                                    <!-- Imagen predeterminada de vista previa -->
-                                    <img id="previewImage" style="max-width: 300px; max-height: auto; display: block; margin: 0 auto;" 
-                                         class="mx-auto" 
-                                         src="https://static.vecteezy.com/system/resources/previews/018/765/757/non_2x/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg" />
-                                </div>
-
-
-                                <div class="mb-3">
-                                    <label for="InputUsername" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="InputUsername" placeholder="Ingresa tu nombre de usuario" th:field="*{Username}" required  onkeypress = " condicionalUsername(event, this)" >
-                                    <div class="error-msg text-danger" style="display: none;"></div>    
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="InputNombre" class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="InputNombre" placeholder="Ingresa tu nombre" th:field="*{Nombre}"  required onkeypress = " caracteresNoValidos(event, this)" >
-                                    <div class="error-msg text-danger" style="display: none;"></div>
-
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="InputApellidoPaterno" class="form-label">Apellido Paterno</label>
-                                    <input type="text" class="form-control" id="InputApellidoPaterno" placeholder="Ingresa tu apellido paterno" required th:field="*{ApellidoPaterno}" onkeypress="caracteresNoValidos(event, this)">
-                                    <div class="error-msg text-danger" style="display: none;"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="InputApellidoMaterno" class="form-label">Apellido Materno</label>
-                                    <input type="text" class="form-control" id="InputApellidoMaterno" placeholder="Ingresa tu apellido materno"th:field="*{ApellidoMaterno}" required onkeypress="caracteresNoValidos(event, this)">
-                                    <div class="error-msg text-danger" style="display: none;"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="InputEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="InputEmail" placeholder="Ingresa tu correo electrónico" th:field="*{Email}" required onkeypress="condicionalEmail(event, this)">
-                                    <div class="error-msg text-danger" style="display: none;"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="InputPassword" class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" id="InputPassword" placeholder="Ingresa tu contraseña" th:field="*{Password}" required  oninput="condicionalPassword(this)"  onkeydown="bloquearTeclas(event, this)" onblur="mantenerEnfocado(this)">
-                                    <div class="error-msg text-danger" style="display: none;"></div>
-                                </div>
-
-
-                                <div class="mb-3">
-                                    <label for="InputConfirmPassword" class="form-label">Repite Contraseña</label>
-                                    <input type="password" class="form-control" id="InputConfirmPassword" placeholder="Repite tu contraseña" required oninput="validarPasswords()">
-                                    <div id="passwordError" class="text-danger" style="display: none;">
-                                        Las contraseñas no coinciden.
-                                    </div>
-                                </div>
-
-
-
-
-                                <div class="mb-3">
-                                    <label for="InputFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-                                    <input type="date" class="form-control" id="InputFechaNacimiento" placeholder="DD-MM-YYYY" th:field="*{FechaNacimiento}" required
-                                           onchange="validarEdad(this)">
-                                    <div id="fechaError" class="text-danger" style="display: none;"></div>
-                                </div>
-
-
-
-                                <div class="mb-3">
-                                    <label for="InputSexo" class="form-label">Sexo (M/F)</label>
-
-                                    <select name="select" th:field="*{Sexo}">
-                                        <option value="M">Masculino</option>
-                                        <option value="F" selected>Femenino</option>
-                                    </select>
-
-                                </div>
-
-
-                                <div class="mb-3">
-                                    <label for="InputTelefono" class="form-label">Teléfono</label>
-                                    <input type="text" class="form-control" id="InputTelefono"
-                                           placeholder="Ingresa tu teléfono" th:field="*{Telefono}" required
-                                           oninput="validarTelefono(this),'telefono'">
-                                    <div id="telefonoError" class="text-danger" style="display: none;"></div>
-                                </div>
-
-
-                                <div class="mb-3">
-                                    <label for="InputCelular" class="form-label">Celular</label>
-                                    <input type="text" class="form-control" id="InputCelular"
-                                           placeholder="Ingresa tu celular" th:field="*{Celular}" required
-                                           oninput="validarTelefono(this, 'celularError')">
-                                    <div id="celularError" class="text-danger" style="display: none;"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="InputCurp" class="form-label">Curp</label>
-                                    <input type="text" class="form-control" id="InputCurp" placeholder="Ingresa tu CURP" th:field="*{Curp}" required >
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="InputRol" class="form-label">Rol</label>
-
-                                    <select class="form-select" aria-label="Default select example" th:field="*{RolML.IdRol}">
-                                        <option value=0 selected>   </option>
-                                        <option th:each="rol : ${Roles}" th:text="${rol.nombre}" th:value="${rol.IdRol}"  required>One</option>
-                                    </select>
-                                </div>
+                                Imagen predeterminada de vista previa 
+                                <img id="previewImage" style="max-width: 300px; max-height: auto; display: block; margin: 0 auto;" 
+                                     class="mx-auto" 
+                                     src="https://static.vecteezy.com/system/resources/previews/018/765/757/non_2x/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg" />
                             </div>
 
 
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Username</strong></td>
+                                        <td><input type="text" class="form-control" id="InputUsername" placeholder="Ingresa tu nombre de usuario" th:field="*{Username}" required  onkeypress = " condicionalUsername(event, this)" >
+                                            <div class="error-msg text-danger" style="display: none;"></div>  </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Nombre</strong></td>
+                                        <td>
+                                            <input type="text" class="form-control" id="InputNombre" placeholder="Ingresa tu nombre" th:field="*{Nombre}"  required onkeypress = " caracteresNoValidos(event, this)" >
+                                            <div class="error-msg text-danger" style="display: none;"></div></td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td><strong>Apellido Paterno</strong></td>
+                                        <td>
+                                            <input type="text" class="form-control" id="InputApellidoPaterno" placeholder="Ingresa tu apellido paterno" required th:field="*{ApellidoPaterno}" onkeypress="caracteresNoValidos(event, this)">
+                                            <div class="error-msg text-danger" style="display: none;"></div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Apellido Materno</strong></td>
+                                        <td>
+                                            <input type="text" class="form-control" id="InputApellidoMaterno" placeholder="Ingresa tu apellido materno"th:field="*{ApellidoMaterno}" required onkeypress="caracteresNoValidos(event, this)">
+                                            <div class="error-msg text-danger" style="display: none;"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email</strong></td>
+                                        <td>
+                                            <input type="email" class="form-control" id="InputEmail" placeholder="Ingresa tu correo electrónico" th:field="*{Email}" required onkeypress="condicionalEmail(event, this)">
+                                            <div class="error-msg text-danger" style="display: none;"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Contraseña</strong></td>
+                                        <td>
+                                            <input type="password" class="form-control" id="InputPassword" placeholder="Ingresa tu contraseña" th:field="*{Password}" required  oninput="condicionalPassword(this)"  onkeydown="bloquearTeclas(event, this)" onblur="mantenerEnfocado(this)">
+                                            <div class="error-msg text-danger" style="display: none;"></div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Repite Contraseña</strong></td>
+                                        <td>
+                                            <input type="password" class="form-control" id="InputConfirmPassword" placeholder="Repite tu contraseña" required oninput="validarPasswords()">
+                                            <div id="passwordError" class="text-danger" style="display: none;">
+                                                Las contraseñas no coinciden.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Fecha de Nacimiento</strong></td>
+                                        <td>
+                                            <input type="date" class="form-control" id="InputFechaNacimiento" placeholder="DD-MM-YYYY" th:field="*{FechaNacimiento}" required
+                                                   onchange="validarEdad(this)">
+                                            <div id="fechaError" class="text-danger" style="display: none;"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Sexo (M/F)</strong></td>
+                                        <td>
+
+                                            <select name="select" th:field="*{Sexo}">
+                                                <option value="M">Masculino</option>
+                                                <option value="F" selected>Femenino</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Teléfono</strong></td>
+                                        <td>
+                                            <input type="text" class="form-control" id="InputTelefono"
+                                                   placeholder="Ingresa tu teléfono" th:field="*{Telefono}" required
+                                                   oninput="validarTelefono(this),'telefono'">
+                                            <div id="telefonoError" class="text-danger" style="display: none;"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Celular</strong></td>
+                                        <td>
+                                            <input type="text" class="form-control" id="InputCelular"
+                                                   placeholder="Ingresa tu celular" th:field="*{Celular}" required
+                                                   oninput="validarTelefono(this, 'celularError')">
+                                            <div id="celularError" class="text-danger" style="display: none;"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Curp</strong></td>
+                                        <td>
+                                            <input type="text" class="form-control" id="InputCurp" placeholder="Ingresa tu CURP" th:field="*{Curp}" required >
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Rol</strong></td>
+                                        <td>
+                                            <select class="form-select" aria-label="Default select example" th:field="*{RolML.IdRol}">
+                                                <option value=0 selected>   </option>
+                                                <option th:each="rol : ${Roles}" th:text="${rol.nombre}" th:value="${rol.IdRol}"  required>One</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
 
 
-                            <div class="border rounded p-3 bg-white shadow-sm"
-                                 th:if="*{(idUsuario > 0 && Direccion[0].IdDireccion == 0)
-                                 ||(idUsuario == 0 && Direccion[0].IdDireccion == 0)
-                                 || (idUsuario > 0 && Direccion[0].IdDireccion > 0)}"
-                                 >
-                                <h3 class="text-center mb-4">Dirección</h3>
-                                <table class="table table-hover">
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>Calle:</strong></td>
-                                            <td><input type="text" class="form-control" id="InputCalle" th:field="*{Direccion[0].Calle}" required></td>
-                                        </tr>
+                        <div class="border rounded p-3 bg-white shadow-sm"
+                             th:if="*{(idUsuario > 0 && Direccion[0].IdDireccion == 0)
+                             ||(idUsuario == 0 && Direccion[0].IdDireccion == 0)
+                             || (idUsuario > 0 && Direccion[0].IdDireccion > 0)}"
+                             >
+                            <h3 class="text-center mb-4">Dirección</h3>
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Calle:</strong></td>
+                                        <td><input type="text" class="form-control" id="InputCalle" th:field="*{Direccion[0].Calle}" required></td>
+                                    </tr>
 
-                                        <tr>
-                                            <td><strong>NumInterior:</strong></td>
-                                            <td><input type="text" class="form-control" id="InputNumInterior" th:field="*{Direccion[0].NumInterior}" required></td>
-                                        </tr>
+                                    <tr>
+                                        <td><strong>NumInterior:</strong></td>
+                                        <td><input type="text" class="form-control" id="InputNumInterior" th:field="*{Direccion[0].NumInterior}" required></td>
+                                    </tr>
 
-                                        <tr>
-                                            <td><strong>NumExterior:</strong></td>
-                                            <td><input type="text" class="form-control" id="InputNumExterior" th:field="*{Direccion[0].NumExterior}" required></td>
-                                        </tr>
-
-
-
-                                        <tr>
-                                            <td><strong>País:</strong></td>
-                                            <td>
-                                                <select id="paisddl" class="form-select">
-                                                    <option value="0" selected></option>
-                                                    <option th:each="pais : ${Paises}" th:text="${pais.nombre}" th:value="${pais.IdPais}" required>One</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><strong>Estado:</strong></td>
-                                            <td>
-                                                <select id="estadoddl" class="form-select">
-                                                    <option value="0" selected>Selecciona su estado</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><strong>Municipio:</strong></td>
-                                            <td>
-                                                <select id="municipioddl" class="form-select">
-                                                    <option value="0" selected>Selecciona su municipio</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><strong>Colonia:</strong></td>
-                                            <td>
-                                                <select id="coloniaddl" class="form-select" th:field="*{Direccion[0].Colonia.IdColonia}">
-                                                    <option value="0" selected>Seleccione su colonia</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                    <tr>
+                                        <td><strong>NumExterior:</strong></td>
+                                        <td><input type="text" class="form-control" id="InputNumExterior" th:field="*{Direccion[0].NumExterior}" required></td>
+                                    </tr>
 
 
 
-                            <div class="d-grid gap-2">
-                                <button type="submit"  class="btn btn-success mt-4 w-100 fw-bold">Enviar</button>
-                            </div>
+                                    <tr>
+                                        <td><strong>País:</strong></td>
+                                        <td>
+                                            <select id="paisddl" class="form-select">
+                                                <option value="0" selected></option>
+                                                <option th:each="pais : ${Paises}" th:text="${pais.nombre}" th:value="${pais.IdPais}" required>One</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Estado:</strong></td>
+                                        <td>
+                                            <select id="estadoddl" class="form-select">
+                                                <option value="0" selected>Selecciona su estado</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Municipio:</strong></td>
+                                        <td>
+                                            <select id="municipioddl" class="form-select">
+                                                <option value="0" selected>Selecciona su municipio</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Colonia:</strong></td>
+                                        <td>
+                                            <select id="coloniaddl" class="form-select" th:field="*{Direccion[0].Colonia.IdColonia}">
+                                                <option value="0" selected>Seleccione su colonia</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                        <div class="d-grid gap-2">
+                            <button type="submit"  class="btn btn-success mt-4 w-100 fw-bold">Enviar</button>
+                        </div>
 
 
                     </form>
@@ -241,28 +246,29 @@
 
         function previewImage() {
             const fileInput = document.getElementById('imagenFile');  // Obtiene el input de archivo
-            const preview = document.getElementById('previewImage');  // Obtiene el elemento img para la vista previa
-            const file = fileInput.files[0];  // Obtiene el primer archivo seleccionado
+            const preview = document.getElementById('previewImage');  // Obtiene el elemento de imagen
+            const file = fileInput.files[0];  // Obtiene el archivo seleccionado
 
             // Verifica si se ha seleccionado un archivo
             if (file) {
                 // Verifica que el archivo sea una imagen
                 if (file.type.startsWith('image/')) {
-                    const reader = new FileReader(); // Crear un nuevo objeto FileReader
+                    const reader = new FileReader();  // Crea un nuevo objeto FileReader
 
-                    // Cuando el archivo esté listo, actualizar el src de la imagen con la URL de los datos
+                    // Cuando el archivo esté listo, actualiza el src de la imagen con la URL de los datos
                     reader.onload = function (e) {
-                        preview.src = e.target.result; // Asignar la URL de la imagen al src
+                        console.log("Archivo leído correctamente:", e.target.result);  // Verifica en la consola
+                        preview.src = e.target.result;  // Asigna la URL de la imagen al src
                     };
 
-                    // Leer el archivo como una URL de datos (Data URL)
+                    // Lee el archivo como una URL de datos (Data URL)
                     reader.readAsDataURL(file);
                 } else {
-                    alert("Por favor, selecciona una imagen.");
+                    alert("Por favor, selecciona un archivo de imagen.");
                 }
             } else {
-                // Si no se selecciona ningún archivo, se mantiene la imagen predeterminada
-                preview.src = "https://via.placeholder.com/300x200.png?text=Imagen+Por+Defecto";
+                // Si no se selecciona un archivo, muestra un mensaje de error
+                console.log("No se ha seleccionado ningún archivo.");
             }
         }
 
