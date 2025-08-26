@@ -1,55 +1,54 @@
-package com.digis.IHernandezProgramacionNCapas.ML;
+package com.digis.IHernandezProgramacionNCapas.JPA;
 
-import java.util.ArrayList;
-import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 
+@Entity
 public class UsuariosML {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idusuario")
     private int IdUsuario;
+    @Column(name = "username")
     private String Username;
+    @Column(name = "nombre")
     private String Nombre;
+    @Column(name = "apellidopaterno")
     private String ApellidoPaterno;
+    @Column(name = "apellidomaterno")
     private String ApellidoMaterno;
+    @Column(name = "email")
     private String Email;
+    @Column(name = "password")
     private String Password;
-    @DateTimeFormat(pattern = "YYYY-MM-DD")
+    @Column(name = "fechanacimiento")
     private String FechaNacimiento;
+    @Column(name = "sexo")
     private char Sexo;
+    @Column(name = "telefeno")
     private String Telefono;
+    @Column(name = "celular")
     private String Celular;
+    @Column(name = "curp")
     private String Curp;
-
+    @Lob
+    @Column(name = "imagen")
     private String Imagen;//Agregar imagen
-
+    @ManyToOne
+    @JoinColumn( name = "idrol")
     public RolML RolML;
-    public ArrayList<Direccion> Direccion;
 
-    public UsuariosML() {
-    }
-
-    public UsuariosML(int IdUsuario, String Username, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, String FechaNacimiento, char Sexo, String Telefono, String Celular, String Curp) {
-        this.IdUsuario = IdUsuario;
-        this.Username = Username;
-        this.Nombre = Nombre;
-        this.ApellidoPaterno = ApellidoPaterno;
-        this.ApellidoMaterno = ApellidoMaterno;
-        this.Email = Email;
-        this.Password = Password;
-        this.FechaNacimiento = FechaNacimiento;
-        this.Sexo = Sexo;
-        this.Telefono = Telefono;
-        this.Celular = Celular;
-        this.Curp = Curp;
-    }
-
-    public UsuariosML(String Nombre, String ApellidoPaterno, String ApellidoMaterno) {
-
-        this.Nombre = Nombre;
-        this.ApellidoPaterno = ApellidoPaterno;
-        this.ApellidoMaterno = ApellidoMaterno;
-
-    }
-
+//    public ArrayList<Direccion> Direccion;
+    
+    
+    
     public int getIdUsuario() {
         return IdUsuario;
     }
@@ -146,32 +145,20 @@ public class UsuariosML {
         this.Curp = Curp;
     }
 
+    public String getImagen() {
+        return Imagen;
+    }
+
+    public void setImagen(String Imagen) {
+        this.Imagen = Imagen;
+    }
+
     public RolML getRolML() {
         return RolML;
     }
 
     public void setRolML(RolML RolML) {
         this.RolML = RolML;
-    }
-
-    public ArrayList<Direccion> getDireccion() {
-        return Direccion;
-    }
-
-    public void setDireccion(ArrayList<Direccion> Direccion) {
-        this.Direccion = Direccion;
-    }
-
-    public String getImagen() {
-
-        return Imagen;
-
-    }
-
-    public void setImagen(String Imagen) {
-
-        this.Imagen = Imagen;
-
     }
 
 }

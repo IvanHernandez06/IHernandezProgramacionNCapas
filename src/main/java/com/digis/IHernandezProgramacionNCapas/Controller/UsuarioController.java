@@ -1,11 +1,13 @@
 package com.digis.IHernandezProgramacionNCapas.Controller;
 
 import com.digis.IHernandezProgramacionNCapas.DAO.ColoniaDAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.DAO.DireccionDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.EstadoDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.MunicipioDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.PaisDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.RolDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.UsuarioDAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.DAO.UsuarioJPADAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.ML.Colonia;
 import com.digis.IHernandezProgramacionNCapas.ML.Direccion;
 import com.digis.IHernandezProgramacionNCapas.ML.ErrorCM;
@@ -16,14 +18,11 @@ import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Date;
 import java.util.List;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -50,6 +49,10 @@ public class UsuarioController {
     @Autowired
     private UsuarioDAOImplementation usuarioDAOImplementation;
     @Autowired
+    private UsuarioJPADAOImplementation usuarioJPADAOImplementation;
+    @Autowired
+    private DireccionDAOImplementation direccionDAOImplentation;
+    @Autowired
     private RolDAOImplementation rolDAOImplementation;
     @Autowired
     private PaisDAOImplementation paisDAOImplementation;
@@ -63,13 +66,25 @@ public class UsuarioController {
     @GetMapping
     public String Index(Model model) {
 
-        Result result = usuarioDAOImplementation.GetAll();
+        Result result = usuarioDAOImplementation.GetAll(new UsuariosML("", "", ""));
+
+        model.addAttribute("usuarioBusqueda", new UsuariosML());
         if (result.correct) {
             model.addAttribute("usuarios", result.objects);
         } else {
             model.addAttribute("usuarios", null);
         }
         return "UsuarioIndex";
+    }
+
+    @PostMapping
+    public String Index(Model model, @ModelAttribute("usuarioBusqueda") UsuariosML usuarioBusqueda) {
+
+        Result result = usuarioDAOImplementation.GetAll(usuarioBusqueda);
+//      model.addAttribute("alumnoBusqueda", alumnoBusqueda);
+        model.addAttribute("usuarios", result.objects);
+        return "UsuarioIndex";
+
     }
 
     @GetMapping("/action/{idUsuario}")
@@ -118,6 +133,7 @@ public class UsuarioController {
             usuario.setIdUsuario(idUsuario);
             usuario.setDireccion(new ArrayList<>());
             Direccion direccion = new Direccion();
+
             model.addAttribute("Usuario", usuario);
 
         } else {
@@ -128,22 +144,16 @@ public class UsuarioController {
             Direccion direccion = new Direccion();
             direccion.setIdDireccion(idDireccion);
             usuario.getDireccion().add(direccion);
+
+            model.addAttribute("Direccion", direccionDAOImplentation.GetId(idDireccion));
+
             model.addAttribute("Usuario", usuario);
 
         }
         model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
-
         model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
         return "usuarioForm";
 
-    }
-
-    @GetMapping("usuarioForm") // localhost:8081/alumno/add
-    public String add(Model model) {
-        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
-        model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
-        model.addAttribute("Usuario", new UsuariosML());
-        return "usuarioForm";
     }
 
     @PostMapping("usuarioForm") // localhost:8081/alumno/add
@@ -153,8 +163,7 @@ public class UsuarioController {
 
         if (imagen != null) {
             String nombre = imagen.getOriginalFilename();
-            //archivo.jpg
-            //[archivo,jpg]
+
             String extension = nombre.split("\\.")[1];
             if (extension.equals("jpg")) {
                 try {
@@ -171,12 +180,20 @@ public class UsuarioController {
         }
         Result result = usuarioDAOImplementation.Add(usuario);
         return "redirect:/Usuario";
+
     }
 
+    
+    @RequestMapping("getDireccionById")
+    @ResponseBody
+    public Result mostrarDireccion(@RequestParam("idDireccion") int IdDireccion, Model model) {
+        return direccionDAOImplentation.GetId(IdDireccion);
+    }
+
+    
     @GetMapping("getEstadosByIdPais/{IdPais}")
     @ResponseBody // retorne un dato estructurado - JSON
-    public Result EstadoByPais(@PathVariable int IdPais
-    ) {
+    public Result EstadoByPais(@PathVariable int IdPais) {
         return estadoDAOImplementation.GetAll(IdPais);
     }
 
@@ -333,7 +350,7 @@ public class UsuarioController {
     }
 
     private List<UsuariosML> ProcesarTXT(File file) {
-        
+
         try {
 
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -361,21 +378,19 @@ public class UsuarioController {
 
                 usuario.RolML = new RolML();
                 usuario.RolML.setIdRol(Integer.parseInt(campos[11]));
-                
-                
-                usuario.Direccion  = new ArrayList<>(); //instancias lista de direcciones
+
+                usuario.Direccion = new ArrayList<>(); //instancias lista de direcciones
                 Direccion direccion = new Direccion(); //instancias un modelo direccion
                 direccion.setCalle(campos[12]);
                 direccion.setNumExterior(campos[13]);
                 direccion.setNumInterior(campos[14]);
                 direccion.Colonia = new Colonia();
                 direccion.Colonia.setIdColonia(Integer.parseInt(campos[15]));
-                
+
                 usuario.Direccion.add(direccion); //agregar direccion a la lista de direcciones
-                
+
                 usuarios.add(usuario); // agregar usuario junto direcciones
-                
-                
+
             }
             return usuarios;
         } catch (Exception ex) {
@@ -428,7 +443,6 @@ public class UsuarioController {
 //                ErrorCM errorCM = new ErrorCM(linea, usuario.getPassword(), "La password tiene un campo erroneo, esta vacio o no contiene los requisitos(minimo 8 caracteres,un especial,una mayuscula)");
 //                errores.add(errorCM);
 //            }
-
             //Formato de fecha
             if (usuario.getFechaNacimiento() == null || usuario.getFechaNacimiento() == "" || !usuario.getFechaNacimiento().matches("^\\d{4}/\\d{2}/\\d{2}$")) {
                 ErrorCM errorCM = new ErrorCM(linea, usuario.getFechaNacimiento(), "La Fecha de Nacimiento tiene un campo erroneo, esta vacio o su formato esta mal YYYY/MM/DD");
@@ -451,14 +465,11 @@ public class UsuarioController {
                 ErrorCM errorCM = new ErrorCM(linea, usuario.getCelular(), "El celular tiene un campo erroneo, esta vacio o num minimo de 10 digitos");
                 errores.add(errorCM);
             }
-            
-            if (usuario.getRolML() == null || usuario.getRolML().getIdRol() == 0 || usuario.getRolML().getIdRol() >4) {
+
+            if (usuario.getRolML() == null || usuario.getRolML().getIdRol() == 0 || usuario.getRolML().getIdRol() > 4) {
                 ErrorCM errorCM = new ErrorCM(linea, usuario.getTelefono(), "La telefono tiene un campo erroneo, esta vacio o num minimo de 10 digitos");
                 errores.add(errorCM);
             }
-            
-            
-           
 
             linea++;
         }

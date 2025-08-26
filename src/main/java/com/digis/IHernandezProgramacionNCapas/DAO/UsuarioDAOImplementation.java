@@ -118,10 +118,118 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
             result.errorMenssage = e.getLocalizedMessage();
             result.e = e;
         }
+        return result;
+    }
+    
+    
+    @Override
+    public Result GetAll(UsuariosML usuario) {
 
+        Result result = new Result();
+
+        try {
+
+            jdbcTemplate.execute("{CALL UsuarioDireccionGetAllQuery(?,?,?,?)}", (CallableStatementCallback<Integer>)
+                    callableStatement -> {
+                
+                
+                callableStatement.setString(1, usuario.getNombre());
+                callableStatement.setString(2, usuario.getApellidoPaterno());
+                callableStatement.setString(3, usuario.getApellidoMaterno());
+                callableStatement.registerOutParameter(4, java.sql.Types.REF_CURSOR);
+                callableStatement.execute();
+                
+                ResultSet resultSet = (ResultSet) callableStatement.getObject(4);
+
+                result.objects = new ArrayList<>();
+
+                while (resultSet.next()) {
+
+                    int idUsuario = resultSet.getInt("idUsuario");
+                    if (!result.objects.isEmpty() && idUsuario == ((UsuariosML) (result.objects.get(result.objects.size() - 1))).getIdUsuario()) {
+                        Direccion direccion = new Direccion();
+                        direccion.setIdDireccion(resultSet.getInt("IdDireccion"));
+                        direccion.setCalle(resultSet.getString("Calle"));
+                        direccion.setNumInterior(resultSet.getString("NumInterior"));
+                        direccion.setNumExterior(resultSet.getString("NumExterior"));
+
+                        direccion.Colonia = new Colonia();
+                        direccion.Colonia.setNombre(resultSet.getString("NombreColonia"));
+                        direccion.Colonia.setCodigoPostal(resultSet.getString("CodigoPostal"));
+
+                        direccion.Colonia.Municipio = new Municipio();
+                        direccion.Colonia.Municipio.setNombre(resultSet.getString("NombreMunicipio"));
+
+                        direccion.Colonia.Municipio.Estado = new Estado();
+                        direccion.Colonia.Municipio.Estado.setNombre(resultSet.getString("NombreEstado"));
+
+                        direccion.Colonia.Municipio.Estado.Pais = new Pais();
+                        direccion.Colonia.Municipio.Estado.Pais.setNombre(resultSet.getString("NombrePais"));
+
+                        ((UsuariosML) (result.objects.get(result.objects.size() - 1))).Direccion.add(direccion);
+
+                    } else {
+                        UsuariosML usuarioBD = new UsuariosML();
+                        
+                        usuarioBD.setImagen(resultSet.getString("Imagen"));
+                        usuarioBD.setIdUsuario(resultSet.getInt("IdUsuario"));
+                        usuarioBD.setUsername(resultSet.getString("Username"));
+                        usuarioBD.setNombre(resultSet.getString("NombreUsuario"));
+                        usuarioBD.setApellidoPaterno(resultSet.getString("ApellidoPaterno"));
+                        usuarioBD.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
+                        usuarioBD.setEmail(resultSet.getString("Email"));
+                        usuarioBD.setPassword(resultSet.getString("Password"));
+                        usuarioBD.setFechaNacimiento(resultSet.getString("FechaNacimiento"));
+                        usuarioBD.setSexo(resultSet.getString("Sexo").charAt(0));
+                        usuarioBD.setTelefono(resultSet.getString("Telefono"));
+                        usuarioBD.setCelular(resultSet.getString("Celular"));
+                        usuarioBD.setCurp(resultSet.getString("Curp"));
+
+                        int IdDireccion = 0;
+                        if ((IdDireccion = resultSet.getInt("IdDireccion")) != 0) {
+
+                            usuarioBD.Direccion = new ArrayList<>();
+
+                            Direccion direccion = new Direccion();
+                            direccion.setIdDireccion(resultSet.getInt("IdDireccion"));
+                            direccion.setCalle(resultSet.getString("Calle"));
+                            direccion.setNumInterior(resultSet.getString("NumInterior"));
+                            direccion.setNumExterior(resultSet.getString("NumExterior"));
+
+                            direccion.Colonia = new Colonia();
+                            direccion.Colonia.setNombre(resultSet.getString("NombreColonia"));
+                            direccion.Colonia.setCodigoPostal(resultSet.getString("CodigoPostal"));
+
+                            direccion.Colonia.Municipio = new Municipio();
+                            direccion.Colonia.Municipio.setNombre(resultSet.getString("NombreMunicipio"));
+
+                            direccion.Colonia.Municipio.Estado = new Estado();
+                            direccion.Colonia.Municipio.Estado.setNombre(resultSet.getString("NombreEstado"));
+
+                            direccion.Colonia.Municipio.Estado.Pais = new Pais();
+                            direccion.Colonia.Municipio.Estado.Pais.setNombre(resultSet.getString("NombrePais"));
+
+                            usuarioBD.Direccion.add(direccion);
+                        }
+                        result.objects.add(usuarioBD);
+                    }
+                }
+
+                result.correct = true;
+                return 1;
+
+            });
+
+        } catch (Exception e) {
+            result.correct = false;
+            result.errorMenssage = e.getLocalizedMessage();
+            result.e = e;
+        }
         return result;
     }
 
+    
+    
     @Override
     public Result GetDatail(int idUsuario) {
         Result result = new Result();
@@ -244,6 +352,8 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
 
     }
 
+    
+    
     @Override
     public Result GetId(int idUsuario) {
         Result result = new Result();
@@ -317,56 +427,6 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
             result.errorMenssage = e.getLocalizedMessage();
             result.e = e;
 
-        }
-
-        return result;
-    }
-
-    @Override
-    public Result direccionIdUsuario(int idUsuario) {
-        Result result = new Result();
-        try {
-            jdbcTemplate.execute("{CALL DireccionGetByIdUsuarios(?,?)}", (CallableStatementCallback<Integer>) callableStatement -> {
-
-                callableStatement.registerOutParameter(1, java.sql.Types.REF_CURSOR);
-                callableStatement.setInt(2, idUsuario);
-                callableStatement.execute();
-                ResultSet resultSet = (ResultSet) callableStatement.getObject(1);
-
-                result.objects = new ArrayList<>();
-
-                while (resultSet.next()) {
-
-                    Direccion direccion = new Direccion();
-                    direccion.setIdDireccion(resultSet.getInt("idDireccion"));
-                    direccion.setCalle(resultSet.getString("Calle"));
-                    direccion.setNumInterior(resultSet.getString("NumInterior"));
-                    direccion.setNumExterior(resultSet.getString("NumExterior"));
-
-                    direccion.Colonia = new Colonia();
-                    direccion.Colonia.setNombre(resultSet.getString("NombreColonia"));
-                    direccion.Colonia.setCodigoPostal(resultSet.getString("CodigoPostal"));
-
-                    direccion.Colonia.Municipio = new Municipio();
-                    direccion.Colonia.Municipio.setNombre(resultSet.getString("NombreMunicipio"));
-
-                    direccion.Colonia.Municipio.Estado = new Estado();
-                    direccion.Colonia.Municipio.Estado.setNombre(resultSet.getString("NombreEstado"));
-
-                    direccion.Colonia.Municipio.Estado.Pais = new Pais();
-                    direccion.Colonia.Municipio.Estado.Pais.setNombre(resultSet.getString("NombrePais"));
-
-                    result.objects.add(direccion);
-
-                }
-                result.correct = true;
-                return 1;
-            });
-
-        } catch (Exception e) {
-            result.correct = false;
-            result.errorMenssage = e.getLocalizedMessage();
-            result.e = e;
         }
 
         return result;
