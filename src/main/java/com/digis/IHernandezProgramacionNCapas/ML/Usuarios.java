@@ -1,9 +1,11 @@
 package com.digis.IHernandezProgramacionNCapas.ML;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class UsuariosML {
+public class Usuarios {
 
     private int IdUsuario;
     private String Username;
@@ -12,8 +14,8 @@ public class UsuariosML {
     private String ApellidoMaterno;
     private String Email;
     private String Password;
-    @DateTimeFormat(pattern = "YYYY-MM-DD")
-    private String FechaNacimiento;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date FechaNacimiento;
     private char Sexo;
     private String Telefono;
     private String Celular;
@@ -22,12 +24,61 @@ public class UsuariosML {
     private String Imagen;//Agregar imagen
 
     public RolML RolML;
-    public ArrayList<Direccion> Direccion;
+    public List<Direccion> Direccion;
 
-    public UsuariosML() {
+    public Usuarios() {
     }
+    
+     public Usuarios(com.digis.IHernandezProgramacionNCapas.JPA.Usuarios usuarioJPA) {
+        this.IdUsuario = usuarioJPA.getIdUsuario();
+        this.Username = usuarioJPA.getUsername();
+        this.Nombre = usuarioJPA.getNombre();
+        this.ApellidoPaterno = usuarioJPA.getApellidoPaterno();
+        this.ApellidoMaterno = usuarioJPA.getApellidoMaterno();
+        this.Email = usuarioJPA.getEmail();
+        this.Password = usuarioJPA.getPassword();
+        this.FechaNacimiento = usuarioJPA.getFechaNacimiento();
+        this.Sexo = usuarioJPA.getSexo();
+        this.Telefono = usuarioJPA.getTelefono();
+        this.Celular = usuarioJPA.getCelular();
+        this.Curp = usuarioJPA.getCurp();
+        this.Imagen = usuarioJPA.getImagen();
 
-    public UsuariosML(int IdUsuario, String Username, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, String FechaNacimiento, char Sexo, String Telefono, String Celular, String Curp) {
+        this.RolML = new RolML();
+        this.RolML.setIdRol(usuarioJPA.RolML.getIdRol());
+        this.RolML.setNombre(usuarioJPA.RolML.getNombre());
+        
+        if (usuarioJPA.Direccion != null && usuarioJPA.Direccion.size() > 0){ // para saber si tiene direcciones
+            this.Direccion = new ArrayList<>();
+        
+         for (com.digis.IHernandezProgramacionNCapas.JPA.Direccion Direccione : usuarioJPA.Direccion) {
+                Direccion direccion = new Direccion();
+                direccion.setIdDireccion(Direccione.getIdDireccion());
+                direccion.setCalle(Direccione.getCalle());
+                direccion.setNumInterior(Direccione.getNumInterior());
+                direccion.setNumExterior(Direccione.getNumExterior());
+                
+                
+                direccion.Colonia = new Colonia();
+                direccion.Colonia.setNombre(Direccione.Colonia.getNombre());
+                direccion.Colonia.setCodigoPostal(Direccione.Colonia.getCodigoPostal());
+                
+                direccion.Colonia.Municipio = new Municipio();
+                direccion.Colonia.Municipio.setNombre(Direccione.Colonia.Municipio.getNombre());
+                
+                direccion.Colonia.Municipio.Estado = new Estado();
+                direccion.Colonia.Municipio.Estado.setNombre(Direccione.Colonia.Municipio.Estado.getNombre());
+
+                direccion.Colonia.Municipio.Estado.Pais = new Pais();
+                direccion.Colonia.Municipio.Estado.Pais.setNombre(Direccione.Colonia.Municipio.Estado.Pais.getNombre());
+                
+                this.Direccion.add(direccion);}
+        }
+        
+       
+    }
+    
+    public Usuarios(int IdUsuario, String Username, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, Date FechaNacimiento, char Sexo, String Telefono, String Celular, String Curp) {
         this.IdUsuario = IdUsuario;
         this.Username = Username;
         this.Nombre = Nombre;
@@ -42,7 +93,7 @@ public class UsuariosML {
         this.Curp = Curp;
     }
 
-    public UsuariosML(String Nombre, String ApellidoPaterno, String ApellidoMaterno) {
+    public Usuarios(String Nombre, String ApellidoPaterno, String ApellidoMaterno) {
 
         this.Nombre = Nombre;
         this.ApellidoPaterno = ApellidoPaterno;
@@ -106,11 +157,11 @@ public class UsuariosML {
         this.Password = Password;
     }
 
-    public String getFechaNacimiento() {
+    public Date getFechaNacimiento() {
         return FechaNacimiento;
     }
 
-    public void setFechaNacimiento(String FechaNacimiento) {
+    public void setFechaNacimiento(Date FechaNacimiento) {
         this.FechaNacimiento = FechaNacimiento;
     }
 
@@ -154,11 +205,11 @@ public class UsuariosML {
         this.RolML = RolML;
     }
 
-    public ArrayList<Direccion> getDireccion() {
+    public List<Direccion> getDireccion() {
         return Direccion;
     }
 
-    public void setDireccion(ArrayList<Direccion> Direccion) {
+    public void setDireccion(List<Direccion> Direccion) {
         this.Direccion = Direccion;
     }
 

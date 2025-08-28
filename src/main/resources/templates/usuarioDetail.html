@@ -18,7 +18,16 @@
                 <!-- Columna de la Card -->
                 <div class="col-md-3">
                     <div class="card w-100">
-                        <img class="card-img-top" src=".../100px180/" alt="Img del usuario">
+                        <td>
+                            <img th:src="${usuario.Imagen != null} 
+                                 ? 'data:image/png;base64,' + ${usuario.Imagen} 
+                                 : 'https://as2.ftcdn.net/v2/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg'"
+                                 alt="Foto de usuario" width="120" height="120" style="margin-left: 90px;" />
+                        </td>
+
+
+
+
                         <div class="card-body">
                             <h4 class="card-title">Detalle del Usuario</h4>
                             <p class="card-text">
@@ -29,7 +38,7 @@
                                 <strong>Email:</strong>
                                 <span th:text="${usuario.Email}"></span><br>
                                 <strong>Fecha de Nacimiento:</strong>
-                                <span th:text="${usuario.fechaNacimiento.substring(0, 10)}"></span><br>
+                                <span th:text="${#dates.format(usuario.fechaNacimiento, 'dd/MM/yyyy')}"></span><br>
                                 <strong>Telefono:</strong>
                                 <span th:text="${usuario.Telefono}"></span><br>
                                 <strong>Curp:</strong>
@@ -72,7 +81,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-          
+
                                         <a th:href="@{/Usuario/formEditable(idUsuario=${usuario.idUsuario}, idDireccion=${direccion.idDireccion})}"
                                            class="btn btn-warning">
                                             <i class="bi bi-pencil-square"></i>

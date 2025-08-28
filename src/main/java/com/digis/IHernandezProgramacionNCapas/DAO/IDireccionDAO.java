@@ -12,4 +12,6 @@ import com.digis.IHernandezProgramacionNCapas.ML.Result;
  */
 public interface IDireccionDAO {
     Result GetId(int idDireccions);
+    
+    Result DireccionGetByIdDireccion(int idDireccion);
 }

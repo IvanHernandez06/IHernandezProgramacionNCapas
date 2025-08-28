@@ -2,25 +2,25 @@
 package com.digis.IHernandezProgramacionNCapas.DAO;
 
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
-import com.digis.IHernandezProgramacionNCapas.ML.UsuariosML;
+import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
 
 public interface IUsuarioDAO {
     
     Result GetAll();
     
-    Result GetAll(UsuariosML usuario);
+    Result GetAll(Usuarios usuario);
     
     
     
     Result GetDatail(int idUsuario);
     
-    Result Add(UsuariosML usuario);
+    Result Add(Usuarios usuario);
     
     
     
     Result GetId(int idUsuario);
     
-    Result  Update(UsuariosML usuario);
+    Result  Update(Usuarios usuario);
     
    
     

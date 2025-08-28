@@ -1,4 +1,4 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Detalles de Usuario</title>
@@ -30,7 +30,7 @@
 
                     <form  method="post" th:object="${Usuario}" th:action="@{/Usuario/usuarioForm}" enctype="multipart/form-data">
 
-                         <input type="hidden" th:field="*{idUsuario}">
+                        <input type="hidden" th:field="*{idUsuario}">
                         <input type="hidden" th:field="*{Direccion[0].idDireccion}">
 
                         <div  th:if="*{(idUsuario == 0 && Direccion[0].IdDireccion == 0)
@@ -107,7 +107,7 @@
                                     <tr>
                                         <td><strong>Fecha de Nacimiento</strong></td>
                                         <td>
-                                            <input type="date" class="form-control" id="InputFechaNacimiento" placeholder="DD-MM-YYYY" th:field="*{FechaNacimiento}" required
+                                            <input type="date" class="form-control" id="InputFechaNacimiento" placeholder="yyyy-MM-dd" th:field="*{FechaNacimiento}" required
                                                    onchange="validarEdad(this)">
                                             <div id="fechaError" class="text-danger" style="display: none;"></div>
                                         </td>
@@ -464,6 +464,7 @@
                 ocultarError();
                 return true;
             }
+
 
             function mostrarError(msg) {
                 const errorDiv = document.getElementById("fechaError");

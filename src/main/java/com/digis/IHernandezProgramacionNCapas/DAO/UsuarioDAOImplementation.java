@@ -6,7 +6,7 @@ import com.digis.IHernandezProgramacionNCapas.ML.Estado;
 import com.digis.IHernandezProgramacionNCapas.ML.Municipio;
 import com.digis.IHernandezProgramacionNCapas.ML.Pais;
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
-import com.digis.IHernandezProgramacionNCapas.ML.UsuariosML;
+import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                 while (resultSet.next()) {
 
                     int idUsuario = resultSet.getInt("idUsuario");
-                    if (!result.objects.isEmpty() && idUsuario == ((UsuariosML) (result.objects.get(result.objects.size() - 1))).getIdUsuario()) {
+                    if (!result.objects.isEmpty() && idUsuario == ((Usuarios) (result.objects.get(result.objects.size() - 1))).getIdUsuario()) {
                         Direccion direccion = new Direccion();
                         direccion.setIdDireccion(resultSet.getInt("IdDireccion"));
                         direccion.setCalle(resultSet.getString("Calle"));
@@ -58,11 +58,11 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         direccion.Colonia.Municipio.Estado.Pais = new Pais();
                         direccion.Colonia.Municipio.Estado.Pais.setNombre(resultSet.getString("NombrePais"));
 
-                        ((UsuariosML) (result.objects.get(result.objects.size() - 1))).Direccion.add(direccion);
+                        ((Usuarios) (result.objects.get(result.objects.size() - 1))).Direccion.add(direccion);
 
                     } else {
-                        UsuariosML usuario = new UsuariosML();
-                        
+                        Usuarios usuario = new Usuarios();
+
                         usuario.setImagen(resultSet.getString("Imagen"));
                         usuario.setIdUsuario(resultSet.getInt("IdUsuario"));
                         usuario.setUsername(resultSet.getString("Username"));
@@ -71,7 +71,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         usuario.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
                         usuario.setEmail(resultSet.getString("Email"));
                         usuario.setPassword(resultSet.getString("Password"));
-                        usuario.setFechaNacimiento(resultSet.getString("FechaNacimiento"));
+//                        usuario.setFechaNacimiento(resultSet.getString("FechaNacimiento"));
                         usuario.setSexo(resultSet.getString("Sexo").charAt(0));
                         usuario.setTelefono(resultSet.getString("Telefono"));
                         usuario.setCelular(resultSet.getString("Celular"));
@@ -120,25 +120,22 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
         }
         return result;
     }
-    
-    
+
     @Override
-    public Result GetAll(UsuariosML usuario) {
+    public Result GetAll(Usuarios usuario) {
 
         Result result = new Result();
 
         try {
 
-            jdbcTemplate.execute("{CALL UsuarioDireccionGetAllQuery(?,?,?,?)}", (CallableStatementCallback<Integer>)
-                    callableStatement -> {
-                
-                
+            jdbcTemplate.execute("{CALL UsuarioDireccionGetAllQuery(?,?,?,?)}", (CallableStatementCallback<Integer>) callableStatement -> {
+
                 callableStatement.setString(1, usuario.getNombre());
                 callableStatement.setString(2, usuario.getApellidoPaterno());
                 callableStatement.setString(3, usuario.getApellidoMaterno());
                 callableStatement.registerOutParameter(4, java.sql.Types.REF_CURSOR);
                 callableStatement.execute();
-                
+
                 ResultSet resultSet = (ResultSet) callableStatement.getObject(4);
 
                 result.objects = new ArrayList<>();
@@ -146,7 +143,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                 while (resultSet.next()) {
 
                     int idUsuario = resultSet.getInt("idUsuario");
-                    if (!result.objects.isEmpty() && idUsuario == ((UsuariosML) (result.objects.get(result.objects.size() - 1))).getIdUsuario()) {
+                    if (!result.objects.isEmpty() && idUsuario == ((Usuarios) (result.objects.get(result.objects.size() - 1))).getIdUsuario()) {
                         Direccion direccion = new Direccion();
                         direccion.setIdDireccion(resultSet.getInt("IdDireccion"));
                         direccion.setCalle(resultSet.getString("Calle"));
@@ -166,11 +163,11 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         direccion.Colonia.Municipio.Estado.Pais = new Pais();
                         direccion.Colonia.Municipio.Estado.Pais.setNombre(resultSet.getString("NombrePais"));
 
-                        ((UsuariosML) (result.objects.get(result.objects.size() - 1))).Direccion.add(direccion);
+                        ((Usuarios) (result.objects.get(result.objects.size() - 1))).Direccion.add(direccion);
 
                     } else {
-                        UsuariosML usuarioBD = new UsuariosML();
-                        
+                        Usuarios usuarioBD = new Usuarios();
+
                         usuarioBD.setImagen(resultSet.getString("Imagen"));
                         usuarioBD.setIdUsuario(resultSet.getInt("IdUsuario"));
                         usuarioBD.setUsername(resultSet.getString("Username"));
@@ -179,7 +176,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         usuarioBD.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
                         usuarioBD.setEmail(resultSet.getString("Email"));
                         usuarioBD.setPassword(resultSet.getString("Password"));
-                        usuarioBD.setFechaNacimiento(resultSet.getString("FechaNacimiento"));
+                        usuarioBD.setFechaNacimiento(resultSet.getDate("FechaNacimiento"));
                         usuarioBD.setSexo(resultSet.getString("Sexo").charAt(0));
                         usuarioBD.setTelefono(resultSet.getString("Telefono"));
                         usuarioBD.setCelular(resultSet.getString("Celular"));
@@ -228,8 +225,6 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
         return result;
     }
 
-    
-    
     @Override
     public Result GetDatail(int idUsuario) {
         Result result = new Result();
@@ -245,7 +240,9 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                 ResultSet resultSet = (ResultSet) callableStatement.getObject(1);
 
                 if (resultSet.next()) {
-                    UsuariosML usuario = new UsuariosML();
+                    Usuarios usuario = new Usuarios();
+
+                    usuario.setImagen(resultSet.getString("Imagen"));
 
                     usuario.setIdUsuario(resultSet.getInt("IdUsuario"));
                     usuario.setUsername(resultSet.getString("Username"));
@@ -254,7 +251,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                     usuario.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
                     usuario.setEmail(resultSet.getString("Email"));
                     usuario.setPassword(resultSet.getString("Password"));
-                    usuario.setFechaNacimiento(resultSet.getString("FechaNacimiento"));
+                    usuario.setFechaNacimiento(resultSet.getDate("FechaNacimiento"));
                     usuario.setSexo(resultSet.getString("Sexo").charAt(0));
                     usuario.setTelefono(resultSet.getString("Telefono"));
                     usuario.setCelular(resultSet.getString("Celular"));
@@ -302,15 +299,15 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
         return result;
     }
 
+    //corregir Fecha
     @Override
-    public Result Add(UsuariosML usuario) {
+    public Result Add(Usuarios usuario) {
         Result result = new Result();
 
         try {
             result.correct = jdbcTemplate.execute("CALL usuariodireccionadd (?,?,?,?,?,?,?,to_date(?,'YYYY/MM/DD'),?,?,?,?,?,?,?,?,?)",
                     (CallableStatementCallback<Boolean>) callablestatement -> {
 
-                        
                         callablestatement.setString(1, usuario.getImagen());
                         callablestatement.setString(2, usuario.getUsername());
                         callablestatement.setString(3, usuario.getNombre());
@@ -319,7 +316,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         callablestatement.setString(6, usuario.getEmail());
                         callablestatement.setString(7, usuario.getPassword());
 
-                        callablestatement.setString(8, usuario.getFechaNacimiento());
+//                        callablestatement.setString(8, usuario.getFechaNacimiento());
                         callablestatement.setString(9, String.valueOf(usuario.getSexo()));
                         callablestatement.setString(10, usuario.getTelefono());
                         callablestatement.setString(11, usuario.getCelular());
@@ -352,8 +349,6 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
 
     }
 
-    
-    
     @Override
     public Result GetId(int idUsuario) {
         Result result = new Result();
@@ -367,7 +362,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         ResultSet resultSet = (ResultSet) callablestatement.getObject(1);
 
                         if (resultSet.next()) {
-                            UsuariosML usuario = new UsuariosML();
+                            Usuarios usuario = new Usuarios();
 
                             usuario.setIdUsuario(resultSet.getInt("IdUsuario"));
                             usuario.setUsername(resultSet.getString("Username"));
@@ -376,18 +371,20 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                             usuario.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
                             usuario.setEmail(resultSet.getString("Email"));
                             usuario.setPassword(resultSet.getString("Password"));
-                            usuario.setFechaNacimiento(resultSet.getString("FechaNacimiento"));
+                            usuario.setFechaNacimiento(resultSet.getDate("FechaNacimiento"));
                             usuario.setSexo(resultSet.getString("Sexo").charAt(0));
                             usuario.setTelefono(resultSet.getString("Telefono"));
                             usuario.setCelular(resultSet.getString("Celular"));
                             usuario.setCurp(resultSet.getString("Curp"));
 
+                           
+                            
                             result.object = usuario;
                             result.correct = true;
 
                         }
 
-                        return false;
+                        return true;
                     });
 
         } catch (Exception e) {
@@ -398,7 +395,8 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
         return result;
     }
 
-    public Result Update(UsuariosML usuario) {
+    //corregir Fecha
+    public Result Update(Usuarios usuario) {
         Result result = new Result();
         try {
             result.correct = jdbcTemplate.execute("CALL UpdateUsuarios (?,?, ?, ?,?, ? ,to_date(?,'DD/MM/YYYY'), ?, ?, ?, ?, ? , ?)",
@@ -410,7 +408,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         callablestatement.setString(4, usuario.getApellidoMaterno());
                         callablestatement.setString(5, usuario.getEmail());
                         callablestatement.setString(6, usuario.getPassword());
-                        callablestatement.setString(7, usuario.getFechaNacimiento());
+//                        callablestatement.setString(7, usuario.getFechaNacimiento());
                         callablestatement.setString(8, String.valueOf(usuario.getSexo()));
                         callablestatement.setString(9, usuario.getTelefono());
                         callablestatement.setString(10, usuario.getCelular());

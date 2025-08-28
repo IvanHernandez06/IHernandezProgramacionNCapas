@@ -1,5 +1,6 @@
 package com.digis.IHernandezProgramacionNCapas.JPA;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,9 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
-public class UsuariosML {
+public class Usuarios {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +34,10 @@ public class UsuariosML {
     @Column(name = "password")
     private String Password;
     @Column(name = "fechanacimiento")
-    private String FechaNacimiento;
+    private Date FechaNacimiento;
     @Column(name = "sexo")
     private char Sexo;
-    @Column(name = "telefeno")
+    @Column(name = "telefono")
     private String Telefono;
     @Column(name = "celular")
     private String Celular;
@@ -41,14 +46,53 @@ public class UsuariosML {
     @Lob
     @Column(name = "imagen")
     private String Imagen;//Agregar imagen
-    @ManyToOne
-    @JoinColumn( name = "idrol")
-    public RolML RolML;
 
-//    public ArrayList<Direccion> Direccion;
-    
-    
-    
+    @ManyToOne
+    @JoinColumn(name = "idrol")
+    public Rol RolML;
+
+    @OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Direccion> Direccion = new ArrayList<>();;
+
+    public Usuarios() {
+    }
+
+    public Usuarios(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML) {
+        this.IdUsuario = usuarioML.getIdUsuario();
+        this.Username = usuarioML.getUsername();
+        this.Nombre = usuarioML.getNombre();
+        this.ApellidoPaterno = usuarioML.getApellidoPaterno();
+        this.ApellidoMaterno = usuarioML.getApellidoMaterno();
+        this.Email = usuarioML.getEmail();
+        this.Password = usuarioML.getPassword();
+        this.FechaNacimiento = usuarioML.getFechaNacimiento();
+        this.Sexo = usuarioML.getSexo();
+        this.Telefono = usuarioML.getTelefono();
+        this.Celular = usuarioML.getCelular();
+        this.Curp = usuarioML.getCurp();
+        this.Imagen = usuarioML.getImagen();
+
+        this.RolML = new Rol();
+        this.RolML.setIdRol(usuarioML.RolML.getIdRol());
+        this.RolML.setNombre(usuarioML.RolML.getNombre());
+
+        for (com.digis.IHernandezProgramacionNCapas.ML.Direccion Direccione : usuarioML.Direccion) {
+            Direccion direccion = new Direccion();
+            direccion.setCalle(Direccione.getCalle());
+            direccion.setNumInterior(Direccione.getNumInterior());
+            direccion.setNumExterior(Direccione.getNumExterior());
+
+            direccion.Colonia = new Colonia();
+            direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
+
+          
+            direccion.Usuario = this;
+
+            this.Direccion.add(direccion);
+        }
+
+    }
+
     public int getIdUsuario() {
         return IdUsuario;
     }
@@ -105,11 +149,11 @@ public class UsuariosML {
         this.Password = Password;
     }
 
-    public String getFechaNacimiento() {
+    public Date getFechaNacimiento() {
         return FechaNacimiento;
     }
 
-    public void setFechaNacimiento(String FechaNacimiento) {
+    public void setFechaNacimiento(Date FechaNacimiento) {
         this.FechaNacimiento = FechaNacimiento;
     }
 
@@ -153,11 +197,11 @@ public class UsuariosML {
         this.Imagen = Imagen;
     }
 
-    public RolML getRolML() {
+    public Rol getRolML() {
         return RolML;
     }
 
-    public void setRolML(RolML RolML) {
+    public void setRolML(Rol RolML) {
         this.RolML = RolML;
     }
 

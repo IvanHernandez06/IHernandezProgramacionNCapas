@@ -13,7 +13,7 @@ import com.digis.IHernandezProgramacionNCapas.ML.Direccion;
 import com.digis.IHernandezProgramacionNCapas.ML.ErrorCM;
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
 import com.digis.IHernandezProgramacionNCapas.ML.RolML;
-import com.digis.IHernandezProgramacionNCapas.ML.UsuariosML;
+import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.File;
@@ -66,9 +66,10 @@ public class UsuarioController {
     @GetMapping
     public String Index(Model model) {
 
-        Result result = usuarioDAOImplementation.GetAll(new UsuariosML("", "", ""));
+        // Result result = usuarioDAOImplementation.GetAll(new Usuarios("", "", ""));
+        Result result = usuarioJPADAOImplementation.GetAll();
 
-        model.addAttribute("usuarioBusqueda", new UsuariosML());
+        model.addAttribute("usuarioBusqueda", new Usuarios());
         if (result.correct) {
             model.addAttribute("usuarios", result.objects);
         } else {
@@ -78,10 +79,10 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public String Index(Model model, @ModelAttribute("usuarioBusqueda") UsuariosML usuarioBusqueda) {
+    public String Index(Model model, @ModelAttribute("usuarioBusqueda") Usuarios usuarioBusqueda) {
 
         Result result = usuarioDAOImplementation.GetAll(usuarioBusqueda);
-//      model.addAttribute("alumnoBusqueda", alumnoBusqueda);
+        //model.addAttribute("alumnoBusqueda", alumnoBusqueda);
         model.addAttribute("usuarios", result.objects);
         return "UsuarioIndex";
 
@@ -95,7 +96,7 @@ public class UsuarioController {
 
             model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
 
-            model.addAttribute("Usuario", new UsuariosML());
+            model.addAttribute("Usuario", new Usuarios());
 
             return "usuarioForm";
         } else {
@@ -118,36 +119,92 @@ public class UsuarioController {
 
         if (idDireccion == null) {
 //            Editar Usuario\
-            UsuariosML usuario = new UsuariosML();
+            Usuarios usuario = new Usuarios();
             usuario.setIdUsuario(idUsuario);
             usuario.setDireccion(new ArrayList<>());
             Direccion direccion = new Direccion();
             direccion.setIdDireccion(-1);
             usuario.getDireccion().add(direccion);
 
-            model.addAttribute("Usuario", usuario);
+//            model.addAttribute("Usuario", usuario);
+            
+            Result result = usuarioDAOImplementation.GetId(idUsuario);
+
+            if (result.correct) {
+                model.addAttribute("Usuario", result.object);
+                model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+
+            } else {
+                model.addAttribute("Usuario", null);
+            }
+
+            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
 
         } else if (idDireccion == 0) {
 //            Agregar nueva dirección a usuario existente
-            UsuariosML usuario = new UsuariosML();
-            usuario.setIdUsuario(idUsuario);
-            usuario.setDireccion(new ArrayList<>());
-            Direccion direccion = new Direccion();
+            Result result = usuarioDAOImplementation.GetId(idUsuario);
 
-            model.addAttribute("Usuario", usuario);
+            if (result.correct) {
+                model.addAttribute("Usuario", result.object);
+            } else {
+                model.addAttribute("Usuario", null);
+            }
 
-        } else {
-//            Editar dirección existente
-            UsuariosML usuario = new UsuariosML();
+            Usuarios usuario = new Usuarios();
             usuario.setIdUsuario(idUsuario);
             usuario.Direccion = new ArrayList<>();
-            Direccion direccion = new Direccion();
-            direccion.setIdDireccion(idDireccion);
-            usuario.getDireccion().add(direccion);
-
-            model.addAttribute("Direccion", direccionDAOImplentation.GetId(idDireccion));
+            usuario.Direccion.add(new Direccion());
 
             model.addAttribute("Usuario", usuario);
+            model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+
+            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+
+//            Usuarios usuario = new Usuarios();
+//            usuario.setIdUsuario(idUsuario);
+//            usuario.setDireccion(new ArrayList<>());
+//            Direccion direccion = new Direccion();
+//
+//            model.addAttribute("Usuario", usuario);
+        } else {
+//            Editar dirección existente
+
+
+
+
+            Result result = usuarioDAOImplementation.DireccionGetByIdDireccion(idDireccion);
+
+            if (result.correct) {
+
+                Usuarios usuario = new Usuarios();
+                usuario.setIdUsuario(idUsuario);
+                usuario.setDireccion(new ArrayList<>());
+                usuario.getDireccion().add((Direccion) result.object);
+
+                //Result resultEstados = estadoDAOImplementation.EstadoByIdPais(usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais());
+                model.addAttribute("Usuario", usuario);
+
+                model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+                model.addAttribute("estados", estadoDAOImplementation.EstadoByIdPais(usuario.Direccion.get(0).Colonia.Municipio.Estado.Pais.getIdPais()).objects);
+                model.addAttribute("municipios", municipioDAOImplementation.MunicipioByIdEstado(usuario.Direccion.get(0).Colonia.Municipio.Estado.getIdEstado()).objects);
+                model.addAttribute("colonias", coloniaDAOImplementation.ColoniaByIdMunicipio(usuario.Direccion.get(0).Colonia.Municipio.getIdMunicipio()).objects);
+
+                
+                
+                
+                
+//            Usuarios usuario = new Usuarios();
+//            usuario.setIdUsuario(idUsuario);
+//            usuario.Direccion = new ArrayList<>();
+//            Direccion direccion = new Direccion();
+//            direccion.setIdDireccion(idDireccion);
+//            usuario.getDireccion().add(direccion);
+//
+//            model.addAttribute("Direccion", direccionDAOImplentation.GetId(idDireccion));
+//            model.addAttribute("Usuario", usuario);
+//            } else {
+//                model.addAttribute("Usuario", null);
+//            }
 
         }
         model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
@@ -157,7 +214,7 @@ public class UsuarioController {
     }
 
     @PostMapping("usuarioForm") // localhost:8081/alumno/add
-    public String Add(@ModelAttribute UsuariosML usuario,
+    public String Add(@ModelAttribute Usuarios usuario,
             Model model,
             @RequestParam("imagenFile") MultipartFile imagen) {
 
@@ -178,19 +235,25 @@ public class UsuarioController {
                 }
             }
         }
-        Result result = usuarioDAOImplementation.Add(usuario);
+        Result result = usuarioJPADAOImplementation.Add(usuario);
         return "redirect:/Usuario";
-
     }
 
-    
+    @GetMapping("delete/{IdUsuario}")
+    public String Delete(@PathVariable("IdUsuario") int IdUsuario) {
+
+//        Result result =usuarioDAOImplementation.Delete(IdUsuario);s
+        Result result = usuarioJPADAOImplementation.Delete(IdUsuario);
+
+        return "redirect:/Usuario";
+    }
+
     @RequestMapping("getDireccionById")
     @ResponseBody
     public Result mostrarDireccion(@RequestParam("idDireccion") int IdDireccion, Model model) {
         return direccionDAOImplentation.GetId(IdDireccion);
     }
 
-    
     @GetMapping("getEstadosByIdPais/{IdPais}")
     @ResponseBody // retorne un dato estructurado - JSON
     public Result EstadoByPais(@PathVariable int IdPais) {
@@ -233,7 +296,7 @@ public class UsuarioController {
         }
 
         if (file.getOriginalFilename().split("\\.")[1].equals("txt")) {
-            List<UsuariosML> usuarios = ProcesarTXT(new File(rutaFinal));
+            List<Usuarios> usuarios = ProcesarTXT(new File(rutaFinal));
             List<ErrorCM> errores = ValidarDatos(usuarios);
 
             if (errores.isEmpty()) {
@@ -251,7 +314,7 @@ public class UsuarioController {
         } else {
             // excel
 
-            List<UsuariosML> usuario = ProcesarExcel(new File(rutaFinal));
+            List<Usuarios> usuario = ProcesarExcel(new File(rutaFinal));
 
             List<ErrorCM> errores = ValidarDatos(usuario);
 
@@ -276,14 +339,14 @@ public class UsuarioController {
         try {
 
             String ruta = session.getAttribute("path").toString();
-            List<UsuariosML> usuarios;
+            List<Usuarios> usuarios;
 
             if (ruta.split("\\.")[1].equals("txt")) {
                 usuarios = ProcesarTXT(new File(ruta));
             } else {
                 usuarios = ProcesarExcel(new File(ruta));
             }
-            for (UsuariosML usuario : usuarios) {
+            for (Usuarios usuario : usuarios) {
                 usuarioDAOImplementation.Add(usuario);
             }
             session.removeAttribute("path");
@@ -294,9 +357,9 @@ public class UsuarioController {
         return "redirect:/Usuario";
     }
 
-    private List<UsuariosML> ProcesarExcel(File file) {
+    private List<Usuarios> ProcesarExcel(File file) {
 
-        List<UsuariosML> usuarios = new ArrayList<>();
+        List<Usuarios> usuarios = new ArrayList<>();
 
         try {
 
@@ -305,7 +368,7 @@ public class UsuarioController {
 
             for (Row row : sheet) {
 
-                UsuariosML usuario = new UsuariosML();
+                Usuarios usuario = new Usuarios();
 
                 usuario.setUsername(row.getCell(0).toString());
                 usuario.setNombre(row.getCell(1).toString());
@@ -315,15 +378,14 @@ public class UsuarioController {
                 usuario.setEmail(row.getCell(5).toString());
                 usuario.setPassword(row.getCell(6).toString());
 
-                usuario.setFechaNacimiento(
-                        row.getCell(7) == null ? ""
-                        : (row.getCell(7).getCellType() == CellType.NUMERIC
-                        ? (DateUtil.isCellDateFormatted(row.getCell(7))
-                        ? new SimpleDateFormat("yyyy/MM/dd").format(row.getCell(7).getDateCellValue())
-                        : new SimpleDateFormat("yyyy/MM/dd").format(DateUtil.getJavaDate(row.getCell(7).getNumericCellValue())))
-                        : row.getCell(7).getStringCellValue())
-                );
-
+//                usuario.setFechaNacimiento(
+//                        row.getCell(7) == null ? ""
+//                        : (row.getCell(7).getCellType() == CellType.NUMERIC
+//                        ? (DateUtil.isCellDateFormatted(row.getCell(7))
+//                        ? new SimpleDateFormat("yyyy/MM/dd").format(row.getCell(7).getDateCellValue())
+//                        : new SimpleDateFormat("yyyy/MM/dd").format(DateUtil.getJavaDate(row.getCell(7).getNumericCellValue())))
+//                        : row.getCell(7).getStringCellValue())
+//                );
                 usuario.setCurp(row.getCell(8).toString());
                 DataFormatter dataFormatter = new DataFormatter();
                 usuario.setTelefono(row.getCell(9) != null ? dataFormatter.formatCellValue(row.getCell(9)) : "");
@@ -349,20 +411,20 @@ public class UsuarioController {
         }
     }
 
-    private List<UsuariosML> ProcesarTXT(File file) {
+    private List<Usuarios> ProcesarTXT(File file) {
 
         try {
 
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             String linea = "";
 
-            List<UsuariosML> usuarios = new ArrayList<>();
+            List<Usuarios> usuarios = new ArrayList<>();
 
             while ((linea = bufferedReader.readLine()) != null) {
 
                 String[] campos = linea.split("\\|");
 
-                UsuariosML usuario = new UsuariosML();
+                Usuarios usuario = new Usuarios();
 
                 usuario.setUsername(campos[0]);
                 usuario.setNombre(campos[1]);
@@ -371,7 +433,8 @@ public class UsuarioController {
                 usuario.setSexo(campos[4].charAt(0));
                 usuario.setEmail(campos[5]);
                 usuario.setPassword(campos[6]);
-                usuario.setFechaNacimiento(campos[7]);
+
+//                usuario.setFechaNacimiento(campos[7]);
                 usuario.setCurp(campos[8]);
                 usuario.setTelefono(campos[9]);
                 usuario.setCelular(campos[10]);
@@ -399,11 +462,11 @@ public class UsuarioController {
         }
     }
 
-    private List<ErrorCM> ValidarDatos(List<UsuariosML> usuarios) {
+    private List<ErrorCM> ValidarDatos(List<Usuarios> usuarios) {
         List<ErrorCM> errores = new ArrayList<>();
 
         int linea = 1;
-        for (UsuariosML usuario : usuarios) {
+        for (Usuarios usuario : usuarios) {
 
             if (usuario.getUsername() == null || usuario.getUsername() == "" || !usuario.getUsername().matches("[a-zA-Z]+\\d*")) {
                 ErrorCM errorCM = new ErrorCM(linea, usuario.getUsername(), "El Username tiene un campo erroneo, esta vacio y/o no se puede empezar con numero");
@@ -444,11 +507,10 @@ public class UsuarioController {
 //                errores.add(errorCM);
 //            }
             //Formato de fecha
-            if (usuario.getFechaNacimiento() == null || usuario.getFechaNacimiento() == "" || !usuario.getFechaNacimiento().matches("^\\d{4}/\\d{2}/\\d{2}$")) {
-                ErrorCM errorCM = new ErrorCM(linea, usuario.getFechaNacimiento(), "La Fecha de Nacimiento tiene un campo erroneo, esta vacio o su formato esta mal YYYY/MM/DD");
-                errores.add(errorCM);
-            }
-
+//            if (usuario.getFechaNacimiento() == null || usuario.getFechaNacimiento() == "" || !usuario.getFechaNacimiento().matches("^\\d{4}/\\d{2}/\\d{2}$")) {
+//                ErrorCM errorCM = new ErrorCM(linea, usuario.getFechaNacimiento(), "La Fecha de Nacimiento tiene un campo erroneo, esta vacio o su formato esta mal YYYY/MM/DD");
+//                errores.add(errorCM);
+//            }
             //Comparacion con Apellidos Nombre y Fecha
             if (usuario.getCurp() == null || usuario.getCurp() == "") {
                 ErrorCM errorCM = new ErrorCM(linea, usuario.getCurp(), "La curp tiene un campo erroneo, esta vacio o no tiene relacion con sus datos ya registrados");

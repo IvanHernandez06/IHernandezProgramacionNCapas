@@ -5,23 +5,28 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-public class RolML {
+public class Estado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idsemestre")
-    private int IdRol;
+    @Column(name = "idestado")
+    private int IdEstado;
     @Column(name = "nombre")
     private String Nombre;
+    @ManyToOne
+    @JoinColumn(name = "idpais")
+    public Pais Pais;
 
-    public int getIdRol() {
-        return IdRol;
+    public int getIdEstado() {
+        return IdEstado;
     }
 
-    public void setIdRol(int IdRol) {
-        this.IdRol = IdRol;
+    public void setIdEstado(int IdEstado) {
+        this.IdEstado = IdEstado;
     }
 
     public String getNombre() {
@@ -30,6 +35,14 @@ public class RolML {
 
     public void setNombre(String Nombre) {
         this.Nombre = Nombre;
+    }
+
+    public Pais getPais() {
+        return Pais;
+    }
+
+    public void setPais(Pais Pais) {
+        this.Pais = Pais;
     }
 
 }
