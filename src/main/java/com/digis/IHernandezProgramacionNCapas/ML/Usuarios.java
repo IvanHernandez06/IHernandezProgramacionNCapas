@@ -7,6 +7,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public class Usuarios {
 
+    
+
+
     private int IdUsuario;
     private String Username;
     private String Nombre;
@@ -25,11 +28,16 @@ public class Usuarios {
 
     public RolML RolML;
     public List<Direccion> Direccion;
-
+    
+    public static Long getId() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    
     public Usuarios() {
     }
     
-     public Usuarios(com.digis.IHernandezProgramacionNCapas.JPA.Usuarios usuarioJPA) {
+     public Usuarios(com.digis.IHernandezProgramacionNCapas.JPA.UsuariosJPA usuarioJPA) {
         this.IdUsuario = usuarioJPA.getIdUsuario();
         this.Username = usuarioJPA.getUsername();
         this.Nombre = usuarioJPA.getNombre();
@@ -51,7 +59,7 @@ public class Usuarios {
         if (usuarioJPA.Direccion != null && usuarioJPA.Direccion.size() > 0){ // para saber si tiene direcciones
             this.Direccion = new ArrayList<>();
         
-         for (com.digis.IHernandezProgramacionNCapas.JPA.Direccion Direccione : usuarioJPA.Direccion) {
+         for (com.digis.IHernandezProgramacionNCapas.JPA.DireccionJPA Direccione : usuarioJPA.Direccion) {
                 Direccion direccion = new Direccion();
                 direccion.setIdDireccion(Direccione.getIdDireccion());
                 direccion.setCalle(Direccione.getCalle());

@@ -1,11 +1,18 @@
-
 package com.digis.IHernandezProgramacionNCapas.ML;
 
+import com.digis.IHernandezProgramacionNCapas.JPA.RolJPA;
+
 public class RolML {
+
     private int IdRol;
     private String Nombre;
 
     public RolML() {
+    }
+
+    public RolML(RolJPA rolJPA) {
+        this.IdRol = rolJPA.getIdRol();
+        this.Nombre = rolJPA.getNombre();
     }
 
     public RolML(int IdRol, String Nombre) {
@@ -28,5 +35,5 @@ public class RolML {
     public void setNombre(String Nombre) {
         this.Nombre = Nombre;
     }
-    
+
 }

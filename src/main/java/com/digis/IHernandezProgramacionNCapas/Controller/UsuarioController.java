@@ -7,7 +7,7 @@ import com.digis.IHernandezProgramacionNCapas.DAO.MunicipioDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.PaisDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.RolDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.UsuarioDAOImplementation;
-import com.digis.IHernandezProgramacionNCapas.DAO.UsuarioJPADAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.JPADAO.UsuarioJPADAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.ML.Colonia;
 import com.digis.IHernandezProgramacionNCapas.ML.Direccion;
 import com.digis.IHernandezProgramacionNCapas.ML.ErrorCM;
@@ -18,15 +18,12 @@ import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -41,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("Usuario")
@@ -117,17 +115,17 @@ public class UsuarioController {
             @RequestParam(required = false) Integer idDireccion,
             Model model) {
 
-        if (idDireccion == null) {
+        if (idDireccion == -1) {
 //            Editar Usuario\
-            Usuarios usuario = new Usuarios();
-            usuario.setIdUsuario(idUsuario);
-            usuario.setDireccion(new ArrayList<>());
-            Direccion direccion = new Direccion();
-            direccion.setIdDireccion(-1);
-            usuario.getDireccion().add(direccion);
-
+//            Usuarios usuario = new Usuarios();
+//            usuario.setIdUsuario(idUsuario);
+//            usuario.setDireccion(new ArrayList<>());
+//            Direccion direccion = new Direccion();
+//            direccion.setIdDireccion(-1);
+//            usuario.getDireccion().add(direccion);
+//
 //            model.addAttribute("Usuario", usuario);
-            
+
             Result result = usuarioDAOImplementation.GetId(idUsuario);
 
             if (result.correct) {
@@ -149,16 +147,12 @@ public class UsuarioController {
             } else {
                 model.addAttribute("Usuario", null);
             }
-
             Usuarios usuario = new Usuarios();
             usuario.setIdUsuario(idUsuario);
             usuario.Direccion = new ArrayList<>();
             usuario.Direccion.add(new Direccion());
 
             model.addAttribute("Usuario", usuario);
-            model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
-
-            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
 
 //            Usuarios usuario = new Usuarios();
 //            usuario.setIdUsuario(idUsuario);
@@ -169,10 +163,7 @@ public class UsuarioController {
         } else {
 //            Editar dirección existente
 
-
-
-
-            Result result = usuarioDAOImplementation.DireccionGetByIdDireccion(idDireccion);
+            Result result = direccionDAOImplentation.GetId(idDireccion);
 
             if (result.correct) {
 
@@ -185,26 +176,13 @@ public class UsuarioController {
                 model.addAttribute("Usuario", usuario);
 
                 model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-                model.addAttribute("estados", estadoDAOImplementation.EstadoByIdPais(usuario.Direccion.get(0).Colonia.Municipio.Estado.Pais.getIdPais()).objects);
-                model.addAttribute("municipios", municipioDAOImplementation.MunicipioByIdEstado(usuario.Direccion.get(0).Colonia.Municipio.Estado.getIdEstado()).objects);
-                model.addAttribute("colonias", coloniaDAOImplementation.ColoniaByIdMunicipio(usuario.Direccion.get(0).Colonia.Municipio.getIdMunicipio()).objects);
+                model.addAttribute("estados", estadoDAOImplementation.GetAll(usuario.Direccion.get(0).Colonia.Municipio.Estado.Pais.getIdPais()).objects);
+                model.addAttribute("municipios", municipioDAOImplementation.GetAll(usuario.Direccion.get(0).Colonia.Municipio.Estado.getIdEstado()).objects);
+                model.addAttribute("colonias", coloniaDAOImplementation.GetAll(usuario.Direccion.get(0).Colonia.Municipio.getIdMunicipio()).objects);
 
-                
-                
-                
-                
-//            Usuarios usuario = new Usuarios();
-//            usuario.setIdUsuario(idUsuario);
-//            usuario.Direccion = new ArrayList<>();
-//            Direccion direccion = new Direccion();
-//            direccion.setIdDireccion(idDireccion);
-//            usuario.getDireccion().add(direccion);
-//
-//            model.addAttribute("Direccion", direccionDAOImplentation.GetId(idDireccion));
-//            model.addAttribute("Usuario", usuario);
-//            } else {
-//                model.addAttribute("Usuario", null);
-//            }
+            } else {
+                model.addAttribute("Usuario", null);
+            }
 
         }
         model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
@@ -216,30 +194,103 @@ public class UsuarioController {
     @PostMapping("usuarioForm") // localhost:8081/alumno/add
     public String Add(@ModelAttribute Usuarios usuario,
             Model model,
-            @RequestParam("imagenFile") MultipartFile imagen) {
+            @RequestParam(name = "imagenFile", required = false) MultipartFile imagen,
+            RedirectAttributes redirectAttributes) {
 
-        if (imagen != null) {
-            String nombre = imagen.getOriginalFilename();
+        if (usuario.getIdUsuario() == 0) {
 
-            String extension = nombre.split("\\.")[1];
-            if (extension.equals("jpg")) {
-                try {
-                    byte[] bytes = imagen.getBytes();
+            if (imagen != null) {
+                String nombre = imagen.getOriginalFilename();
 
-                    String base64Image = Base64.getEncoder().encodeToString(bytes);
+                String extension = nombre.split("\\.")[1];
+                if (extension.equals("jpg")) {
+                    try {
+                        byte[] bytes = imagen.getBytes();
 
-                    usuario.setImagen(base64Image);
-                } catch (Exception ex) {
+                        String base64Image = Base64.getEncoder().encodeToString(bytes);
 
-                    System.out.println("Error");
+                        usuario.setImagen(base64Image);
+                    } catch (Exception ex) {
+
+                        System.out.println("Error");
+                    }
                 }
             }
+            Result result = usuarioJPADAOImplementation.Add(usuario);
+            return "redirect:/Usuario";
         }
-        Result result = usuarioJPADAOImplementation.Add(usuario);
+
+        if (usuario.getIdUsuario() > 0) {
+            if (usuario.Direccion.get(0).getIdDireccion() == -1) { //Editar usuario
+
+                model.addAttribute("Usuario", usuario);
+
+                //Volver a pintar la lista de roles
+                model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+
+                if (imagen != null) {
+                    String nombre = imagen.getOriginalFilename();
+                    //archivo.jpg
+                    //[archivo,jpg]
+                    String extension = nombre.split("\\.")[1];
+                    if (extension.equals("jpg")) {
+                        try {
+                            byte[] bytes = imagen.getBytes();
+                            String base64Image = Base64.getEncoder().encodeToString(bytes);
+                            usuario.setImagen(base64Image);
+                        } catch (Exception ex) {
+                            System.out.println("Error");
+                        }
+
+                    }
+                }
+
+                //Autoinferencia
+                //Result result = usuarioDAOImplementation.EditarUsuario(usuario);
+//                Result result = usuarioJPADAOImplementation.EditarUsuario(usuario);
+                return "redirect:/usuario";
+                //}
+
+            } else if (usuario.Direccion.get(0).getIdDireccion() == 0) { //Agregar direccion
+                //Si bindingResult tiene errores...
+                //if (bindingResult.hasErrors()) {
+                model.addAttribute("Usuario", usuario);
+
+                //return "UsuarioForm";
+                //} else {
+                //Autoinferencia
+                Result result = direccionDAOImplentation.AgregarDireccion(usuario);
+                return "redirect:/Usuario";
+
+//                usuario.Direcciones.get(0).IdUsuario = usuario.getIdUsuario();
+//                Result result = direccionJPADAOImplementation.Add(usuario);
+                //}
+            } else { //Editar direccion
+
+                //Autoinferencia                
+                Result result = direccionDAOImplentation.EditarDireccion(usuario);
+                return "redirect:/Usuario";
+
+                //usuario.Direcciones.get(0).IdUsuario = usuario.getIdUsuario();
+//                Result result = direccionJPADAOImplementation.Update(usuario);
+            }
+        }
+
         return "redirect:/Usuario";
     }
 
-    @GetMapping("delete/{IdUsuario}")
+    @GetMapping("deleteDireccion/{IdDireccion}/{IdUsuario}")
+    public String Delete(Model model,
+            @PathVariable("IdUsuario") int IdUsuario,
+            @PathVariable("IdDireccion") int IdDireccion) {
+
+        // Lógica para eliminar la dirección
+        Result result = direccionDAOImplentation.EliminarDireccion(IdDireccion);
+
+        return "redirect:/Usuario/action/" + IdUsuario;
+    }
+
+    @GetMapping("deleteUser/{IdUsuario}")
     public String Delete(@PathVariable("IdUsuario") int IdUsuario) {
 
 //        Result result =usuarioDAOImplementation.Delete(IdUsuario);s
@@ -247,6 +298,8 @@ public class UsuarioController {
 
         return "redirect:/Usuario";
     }
+    
+    
 
     @RequestMapping("getDireccionById")
     @ResponseBody

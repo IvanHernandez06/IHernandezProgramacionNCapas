@@ -1,6 +1,8 @@
 
 package com.digis.IHernandezProgramacionNCapas.ML;
 
+import com.digis.IHernandezProgramacionNCapas.JPA.ColoniaJPA;
+
 public class Colonia {
     private int IdColonia;
     private String Nombre;
@@ -10,6 +12,20 @@ public class Colonia {
 
   
     public Colonia() {
+    }
+
+    public Colonia(int IdColonia, String Nombre, String CodigoPostal) {
+        this.IdColonia = IdColonia;
+        this.Nombre = Nombre;
+        this.CodigoPostal = CodigoPostal;
+    }
+    
+    
+    
+    public Colonia(ColoniaJPA colonia) {
+       this.IdColonia = colonia.getIdColonia();
+        this.CodigoPostal = colonia.getCodigoPostal();
+        this.Nombre = colonia.getNombre();
     }
     
     

@@ -1,15 +1,29 @@
-
 package com.digis.IHernandezProgramacionNCapas.ML;
 
-public class Estado {
-   private int IdEstado;
-   private String Nombre;
-   
-   public Pais Pais;
+import com.digis.IHernandezProgramacionNCapas.JPA.EstadoJPA;
 
+public class Estado {
+
+    private int IdEstado;
+    private String Nombre;
+
+    public Pais Pais;
+
+    public Estado() {
+    }
+
+    public Estado(int IdEstado, String Nombre) {
+        this.IdEstado = IdEstado;
+        this.Nombre = Nombre;
+    }
     
-   
-   
+
+    public Estado(EstadoJPA estado) {
+        this.IdEstado = estado.getIdEstado();
+        this.Nombre = estado.getNombre();
+
+    }
+
     public int getIdEstado() {
         return IdEstado;
     }
@@ -33,7 +47,5 @@ public class Estado {
     public void setPais(Pais Pais) {
         this.Pais = Pais;
     }
-   
-   
-   
+
 }

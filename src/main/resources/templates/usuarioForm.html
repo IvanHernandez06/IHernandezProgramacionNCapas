@@ -31,7 +31,7 @@
                     <form  method="post" th:object="${Usuario}" th:action="@{/Usuario/usuarioForm}" enctype="multipart/form-data">
 
                         <input type="hidden" th:field="*{idUsuario}">
-                        <input type="hidden" th:field="*{Direccion[0].idDireccion}">
+                        <input type="hidden" th:field="*{Direccion[0].IdDireccion}">
 
                         <div  th:if="*{(idUsuario == 0 && Direccion[0].IdDireccion == 0)
                               || (idUsuario > 0 && Direccion[0].IdDireccion == -1)}" >
@@ -229,9 +229,43 @@
                         </div>
 
 
-
+<!--
                         <div class="d-grid gap-2">
-                            <button type="submit"  class="btn btn-success mt-4 w-100 fw-bold">Enviar</button>
+                            <button type="submit"  >Enviar</button>
+                        </div>
+-->
+
+
+
+                        <br>
+                        <!-- Boton para Agregar usuario -->
+                        <div th:if="*{idUsuario == 0}">
+                            <div th:if="*{Direccion[0].IdDireccion}  == 0">
+                                <center><button type="submit" class="btn btn-success mt-4 w-100 fw-bold"  >Agregar</button></center>
+                            </div>
+                        </div>
+
+                        <!-- Boton para Editar usuario -->
+                        <div th:if="*{idUsuario != 0}">
+                            <div th:if="*{Direccion[0].IdDireccion}  == -1 ">
+                                <center><button type="submit" class="btn btn-success mt-4 w-100 fw-bold"  >Actualizar</button></center>
+                            </div>
+                        </div>
+
+                        <!-- Boton para Agregar direccion -->
+                        <div th:if="*{idUsuario} != 0">
+                            <div th:if="*{Direccion[0].IdDireccion} == 0 ">
+                                <center><button type="submit" class="btn btn-success mt-4 w-100 fw-bold"  >Agregar</button></center>
+                            </div>
+                        </div>
+
+                        <!-- Boton para Editar direccion -->
+                        <div th:if="*{idUsuario } != 0">
+                            <div th:if="*{Direccion[0].IdDireccion} != -1 ">
+                                <div th:if="*{Direccion[0].IdDireccion} != 0 ">
+                                    <center><button type="submit" class="btn btn-success mt-4 w-100 fw-bold"  >Actualizar</button></center>
+                                </div>
+                            </div>
                         </div>
 
 

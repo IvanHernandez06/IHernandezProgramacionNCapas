@@ -45,7 +45,7 @@
                                 <span th:text="${usuario.Curp}"></span>
                             </p>
                             <!-- CAMBIO: Botón para editar usuario -->
-                            <a th:href="@{/Usuario/formEditable(idUsuario=${usuario.idUsuario})}" 
+                            <a th:href="@{/Usuario/formEditable(idUsuario=${usuario.idUsuario}, idDireccion=-1)}" 
                                class="btn btn-primary w-100 mb-2">
                                 Editar Usuario
                             </a>
@@ -86,9 +86,14 @@
                                            class="btn btn-warning">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
+                                        
+                                        
+                                        <a th:href="@{/Usuario/deleteDireccion/{idDireccion}/{idUsuario}(idDireccion=${direccion.idDireccion}, idUsuario=${usuario.idUsuario})}"
+                                           class="btn btn-danger">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </a>
 
 
-                                        <a class="btn btn-danger"><i class="bi bi-trash3-fill"></i></a>
                                     </td>
                                     <td><span th:text="${direccion.calle}"></span></td>
                                     <td><span th:text="${direccion.NumInterior}"></span></td>

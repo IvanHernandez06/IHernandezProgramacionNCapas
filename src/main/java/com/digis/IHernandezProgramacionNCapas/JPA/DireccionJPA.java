@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Direccion {
+public class DireccionJPA {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +24,28 @@ public class Direccion {
     private String NumExterior;
     @ManyToOne
     @JoinColumn(name = "idcolonia")
-    public Colonia Colonia;
+    public ColoniaJPA Colonia;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idusuario", nullable = false)
-    public Usuarios Usuario;
+    public UsuariosJPA Usuario;
 
-    public Direccion() {
+    public DireccionJPA() {
+    }
+
+    public DireccionJPA(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML) {
+
+//      usuarioML.Direcciones.get(0) -> DireccionJPA ML
+        com.digis.IHernandezProgramacionNCapas.ML.Direccion direccionML= usuarioML.Direccion.get(0);
+
+        this.IdDireccion = direccionML.getIdDireccion();
+        this.Calle = direccionML.getCalle();
+        this.NumInterior = direccionML.getNumInterior();
+        this.NumExterior = direccionML.getNumExterior();
+        this.Colonia = new ColoniaJPA();
+        this.Colonia.setIdColonia(direccionML.Colonia.getIdColonia());
+        this.Usuario = new UsuariosJPA();
+        this.Usuario.setIdUsuario(usuarioML.getIdUsuario());
+
     }
 
     public int getIdDireccion() {
@@ -64,5 +80,4 @@ public class Direccion {
         this.NumExterior = NumExterior;
     }
 
-   
 }

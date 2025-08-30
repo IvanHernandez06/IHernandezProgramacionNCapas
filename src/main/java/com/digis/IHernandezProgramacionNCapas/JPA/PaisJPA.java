@@ -5,28 +5,34 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Estado {
-
+public class PaisJPA {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idestado")
-    private int IdEstado;
+    @Column(name = "idpais")
+    private int IdPais;
     @Column(name = "nombre")
     private String Nombre;
-    @ManyToOne
-    @JoinColumn(name = "idpais")
-    public Pais Pais;
 
-    public int getIdEstado() {
-        return IdEstado;
+    public PaisJPA() {
+    }
+    
+    public PaisJPA(int IdPais, String Nombre) {
+        this.IdPais = IdPais;
+        this.Nombre = Nombre;
     }
 
-    public void setIdEstado(int IdEstado) {
-        this.IdEstado = IdEstado;
+   
+    
+    
+    public int getIdPais() {
+        return IdPais;
+    }
+
+    public void setIdPais(int IdPais) {
+        this.IdPais = IdPais;
     }
 
     public String getNombre() {
@@ -36,13 +42,5 @@ public class Estado {
     public void setNombre(String Nombre) {
         this.Nombre = Nombre;
     }
-
-    public Pais getPais() {
-        return Pais;
-    }
-
-    public void setPais(Pais Pais) {
-        this.Pais = Pais;
-    }
-
+   
 }

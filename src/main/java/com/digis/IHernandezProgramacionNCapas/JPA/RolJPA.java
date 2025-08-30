@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Rol {
+public class RolJPA {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +16,16 @@ public class Rol {
     @Column(name = "nombre")
     private String Nombre;
 
+    public RolJPA() {
+    }
+
+    public RolJPA(int IdRol, String Nombre) {
+        this.IdRol = IdRol;
+        this.Nombre = Nombre;
+    }
+
+    
+    
     public int getIdRol() {
         return IdRol;
     }

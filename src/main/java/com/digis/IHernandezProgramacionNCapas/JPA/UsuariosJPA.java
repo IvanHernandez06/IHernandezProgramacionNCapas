@@ -10,12 +10,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-public class Usuarios {
+
+@Entity(name = "Usuarios")
+public class UsuariosJPA {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,15 +51,16 @@ public class Usuarios {
 
     @ManyToOne
     @JoinColumn(name = "idrol")
-    public Rol RolML;
+    public RolJPA RolML;
 
     @OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<Direccion> Direccion = new ArrayList<>();;
+    public List<DireccionJPA> Direccion = new ArrayList<>();;
 
-    public Usuarios() {
+    public UsuariosJPA() {
     }
 
-    public Usuarios(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML) {
+    public UsuariosJPA(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML) {
+        
         this.IdUsuario = usuarioML.getIdUsuario();
         this.Username = usuarioML.getUsername();
         this.Nombre = usuarioML.getNombre();
@@ -72,17 +75,17 @@ public class Usuarios {
         this.Curp = usuarioML.getCurp();
         this.Imagen = usuarioML.getImagen();
 
-        this.RolML = new Rol();
+        this.RolML = new RolJPA();
         this.RolML.setIdRol(usuarioML.RolML.getIdRol());
         this.RolML.setNombre(usuarioML.RolML.getNombre());
 
         for (com.digis.IHernandezProgramacionNCapas.ML.Direccion Direccione : usuarioML.Direccion) {
-            Direccion direccion = new Direccion();
+            DireccionJPA direccion = new DireccionJPA();
             direccion.setCalle(Direccione.getCalle());
             direccion.setNumInterior(Direccione.getNumInterior());
             direccion.setNumExterior(Direccione.getNumExterior());
 
-            direccion.Colonia = new Colonia();
+            direccion.Colonia = new ColoniaJPA();
             direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
 
           
@@ -197,11 +200,11 @@ public class Usuarios {
         this.Imagen = Imagen;
     }
 
-    public Rol getRolML() {
+    public RolJPA getRolML() {
         return RolML;
     }
 
-    public void setRolML(Rol RolML) {
+    public void setRolML(RolJPA RolML) {
         this.RolML = RolML;
     }
 

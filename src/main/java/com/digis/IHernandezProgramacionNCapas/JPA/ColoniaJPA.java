@@ -9,7 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Colonia {
+public class ColoniaJPA {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +21,9 @@ public class Colonia {
     private String CodigoPostal;
     @ManyToOne
     @JoinColumn(name = "idmunicipio")
-    public Municipio Municipio;
+    public MunicipioJPA Municipio;
 
-    public Colonia() {
+    public ColoniaJPA() {
     }
 
     public int getIdColonia() {
@@ -50,11 +50,11 @@ public class Colonia {
         this.CodigoPostal = CodigoPostal;
     }
 
-    public Municipio getMunicipio() {
+    public MunicipioJPA getMunicipio() {
         return Municipio;
     }
 
-    public void setMunicipio(Municipio Municipio) {
+    public void setMunicipio(MunicipioJPA Municipio) {
         this.Municipio = Municipio;
     }
 

@@ -1,6 +1,7 @@
-package com.digis.IHernandezProgramacionNCapas.DAO;
+package com.digis.IHernandezProgramacionNCapas.JPADAO;
 
-import com.digis.IHernandezProgramacionNCapas.JPA.Usuarios;
+import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
+import com.digis.IHernandezProgramacionNCapas.JPA.UsuariosJPA;
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -22,17 +23,17 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
 
         try {
 
-            TypedQuery<Usuarios> queryUsuarios
+            TypedQuery<UsuariosJPA> queryUsuarios
                     = entityManager.createQuery("FROM Usuarios ORDER BY IdUsuario",
-                            Usuarios.class);
+                            UsuariosJPA.class);
 
-            List<Usuarios> usuarios = queryUsuarios.getResultList();
+            List<UsuariosJPA> usuarios = queryUsuarios.getResultList();
 
             result.objects = new ArrayList<>();
 
-            for (Usuarios usuario : usuarios) {
+            for (UsuariosJPA usuario : usuarios) {
 
-                result.objects.add(new com.digis.IHernandezProgramacionNCapas.ML.Usuarios(usuario));
+                result.objects.add(new Usuarios(usuario));
 
             }
             result.correct = true;
@@ -54,7 +55,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
 
         try {
 
-            Usuarios usuarioJPA = new Usuarios(usuarioML);
+            UsuariosJPA usuarioJPA = new UsuariosJPA(usuarioML);
 
             entityManager.persist(usuarioJPA);
 
@@ -72,7 +73,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
         Result result = new Result();
         try {
             
-            Usuarios usuarioJPA = entityManager.find(Usuarios.class, IdUsuario);
+            UsuariosJPA usuarioJPA = entityManager.find(UsuariosJPA.class, IdUsuario);
             entityManager.remove(usuarioJPA);
 
             result.correct = true;

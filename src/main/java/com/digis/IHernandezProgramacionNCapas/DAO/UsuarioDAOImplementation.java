@@ -353,7 +353,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
     public Result GetId(int idUsuario) {
         Result result = new Result();
         try {
-            result.correct = jdbcTemplate.execute("CALL UsuariosGetId (?,?)",
+            result.correct = jdbcTemplate.execute("CALL UsuariosGetIdDireccion (?,?)",
                     (CallableStatementCallback<Boolean>) callablestatement -> {
                         callablestatement.registerOutParameter(1, java.sql.Types.REF_CURSOR);
                         callablestatement.setInt(2, idUsuario);
@@ -377,8 +377,10 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                             usuario.setCelular(resultSet.getString("Celular"));
                             usuario.setCurp(resultSet.getString("Curp"));
 
-                           
-                            
+                            usuario.Direccion = new ArrayList<>();
+
+                            usuario.Direccion.add(new Direccion(-1));
+
                             result.object = usuario;
                             result.correct = true;
 
