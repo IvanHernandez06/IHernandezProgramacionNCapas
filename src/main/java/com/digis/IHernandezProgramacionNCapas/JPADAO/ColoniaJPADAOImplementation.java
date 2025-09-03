@@ -2,7 +2,6 @@
 package com.digis.IHernandezProgramacionNCapas.JPADAO;
 
 import com.digis.IHernandezProgramacionNCapas.JPA.ColoniaJPA;
-import com.digis.IHernandezProgramacionNCapas.ML.Colonia;
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -21,17 +20,21 @@ public class ColoniaJPADAOImplementation implements IColoniaJPADAO{
     EntityManager entityManager;
 
     @Override
-    public Result GetAll() {
+    public Result GetAll(int IdMunicipio) {
         Result result = new Result();
 
         try {
-            TypedQuery<ColoniaJPA> queryColonia
-                    = entityManager.createQuery("FROM colonia", ColoniaJPA.class);
-            List<ColoniaJPA> colonias = queryColonia.getResultList();
+            TypedQuery<ColoniaJPA> queryColonias = entityManager.createQuery("FROM Colonia where Municipio.IdMunicipio = :IdMunicipio ", ColoniaJPA.class);
+            queryColonias.setParameter("IdMunicipio", IdMunicipio);
+            List<ColoniaJPA> colonias = queryColonias.getResultList();
+
             result.objects = new ArrayList<>();
+
             for (ColoniaJPA colonia : colonias) {
-                result.objects.add(new Colonia(colonia));
+                result.objects.add(new com.digis.IHernandezProgramacionNCapas.ML.Colonia(colonia));
             }
+
+            result.correct = true;
 
         } catch (Exception e) {
             result.e = e;
@@ -41,18 +44,7 @@ public class ColoniaJPADAOImplementation implements IColoniaJPADAO{
         return result;
     }
 
-    @Override
-    public Result GetByIdMunicipio(int IdMunicipio) {
-        Result result = new Result();
-
-        try {
-
-        } catch (Exception e) {
-            result.e = e;
-            result.errorMenssage = e.getLocalizedMessage();
-            result.correct = false;
-        }
-        return result;
+   
         
-}
+
 }

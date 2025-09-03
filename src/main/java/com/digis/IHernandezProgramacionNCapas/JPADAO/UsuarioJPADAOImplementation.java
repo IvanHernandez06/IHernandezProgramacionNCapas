@@ -49,7 +49,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
 
     @Transactional
     @Override
-    public Result Add(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML) {
+    public Result Add(Usuarios usuarioML) {
 
         Result result = new Result();
 
@@ -67,12 +67,28 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
         return result;
     }
 
+    @Override
+    public Result GetOne(int idUsuario) {
+        Result result = new Result();
+        try {
+            UsuariosJPA usuarioJPA = entityManager.find(UsuariosJPA.class, idUsuario);
+            result.object = new Usuarios(usuarioJPA);
+            result.correct = true;
+
+        } catch (Exception e) {
+            result.correct = false;
+            result.errorMenssage = e.getLocalizedMessage();
+            result.e = e;
+        }
+        return result;
+    }
+
     @Transactional
     @Override
     public Result Delete(int IdUsuario) {
         Result result = new Result();
         try {
-            
+
             UsuariosJPA usuarioJPA = entityManager.find(UsuariosJPA.class, IdUsuario);
             entityManager.remove(usuarioJPA);
 
@@ -85,5 +101,45 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
 
         return result;
     }
+    
+    @Transactional
+    @Override
+    public Result Update(Usuarios usuarioML) {
+        Result result = new Result();
+        try {
+            UsuariosJPA usuarioJPA = new UsuariosJPA(usuarioML);
+            UsuariosJPA usuarioBD = entityManager.find(UsuariosJPA.class, usuarioML.getIdUsuario());
+            usuarioJPA.Direccion = usuarioBD.Direccion;
+            entityManager.merge(usuarioJPA);
+            result.correct = true;
+        } catch (Exception e) {
+            result.correct = false;
+            result.e = e;
+            result.errorMenssage = e.getLocalizedMessage();
+        }
 
+        return result;
+    }
+
+    
+      @Transactional
+    @Override
+    public Result BajaLogica(int IdUsuario) {
+        Result result = new Result();
+        
+        try {
+            
+            UsuariosJPA usuarioJPA = entityManager.find(UsuariosJPA.class, IdUsuario);
+            usuarioJPA.setEstatus(usuarioJPA.getEstatus() == 1 ? 0 : 1);
+            entityManager.merge(usuarioJPA);
+
+            
+        } catch (Exception e) {
+            result.correct = false;
+            result.errorMenssage = e.getLocalizedMessage();
+            result.e = e;
+        }
+        
+        return result;
+    }
 }

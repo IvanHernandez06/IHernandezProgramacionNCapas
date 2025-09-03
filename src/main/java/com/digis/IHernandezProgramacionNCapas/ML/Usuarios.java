@@ -1,14 +1,12 @@
 package com.digis.IHernandezProgramacionNCapas.ML;
 
+import com.digis.IHernandezProgramacionNCapas.JPA.UsuariosJPA;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Usuarios {
-
-    
-
 
     private int IdUsuario;
     private String Username;
@@ -25,19 +23,19 @@ public class Usuarios {
     private String Curp;
 
     private String Imagen;//Agregar imagen
+    private int Estatus;
 
     public RolML RolML;
     public List<Direccion> Direccion;
-    
+
     public static Long getId() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    
+
     public Usuarios() {
     }
-    
-     public Usuarios(com.digis.IHernandezProgramacionNCapas.JPA.UsuariosJPA usuarioJPA) {
+
+    public Usuarios(UsuariosJPA usuarioJPA) {
         this.IdUsuario = usuarioJPA.getIdUsuario();
         this.Username = usuarioJPA.getUsername();
         this.Nombre = usuarioJPA.getNombre();
@@ -51,41 +49,41 @@ public class Usuarios {
         this.Celular = usuarioJPA.getCelular();
         this.Curp = usuarioJPA.getCurp();
         this.Imagen = usuarioJPA.getImagen();
+        this.Estatus = usuarioJPA.getEstatus();
 
         this.RolML = new RolML();
         this.RolML.setIdRol(usuarioJPA.RolML.getIdRol());
         this.RolML.setNombre(usuarioJPA.RolML.getNombre());
-        
-        if (usuarioJPA.Direccion != null && usuarioJPA.Direccion.size() > 0){ // para saber si tiene direcciones
+
+        if (usuarioJPA.Direccion != null && usuarioJPA.Direccion.size() > 0) { // para saber si tiene direcciones
             this.Direccion = new ArrayList<>();
-        
-         for (com.digis.IHernandezProgramacionNCapas.JPA.DireccionJPA Direccione : usuarioJPA.Direccion) {
+
+            for (com.digis.IHernandezProgramacionNCapas.JPA.DireccionJPA Direccione : usuarioJPA.Direccion) {
                 Direccion direccion = new Direccion();
                 direccion.setIdDireccion(Direccione.getIdDireccion());
                 direccion.setCalle(Direccione.getCalle());
                 direccion.setNumInterior(Direccione.getNumInterior());
                 direccion.setNumExterior(Direccione.getNumExterior());
-                
-                
+
                 direccion.Colonia = new Colonia();
                 direccion.Colonia.setNombre(Direccione.Colonia.getNombre());
                 direccion.Colonia.setCodigoPostal(Direccione.Colonia.getCodigoPostal());
-                
+
                 direccion.Colonia.Municipio = new Municipio();
                 direccion.Colonia.Municipio.setNombre(Direccione.Colonia.Municipio.getNombre());
-                
+
                 direccion.Colonia.Municipio.Estado = new Estado();
                 direccion.Colonia.Municipio.Estado.setNombre(Direccione.Colonia.Municipio.Estado.getNombre());
 
                 direccion.Colonia.Municipio.Estado.Pais = new Pais();
                 direccion.Colonia.Municipio.Estado.Pais.setNombre(Direccione.Colonia.Municipio.Estado.Pais.getNombre());
-                
-                this.Direccion.add(direccion);}
+
+                this.Direccion.add(direccion);
+            }
         }
-        
-       
+
     }
-    
+
     public Usuarios(int IdUsuario, String Username, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, Date FechaNacimiento, char Sexo, String Telefono, String Celular, String Curp) {
         this.IdUsuario = IdUsuario;
         this.Username = Username;
@@ -220,6 +218,13 @@ public class Usuarios {
     public void setDireccion(List<Direccion> Direccion) {
         this.Direccion = Direccion;
     }
+     public int getEstatus() {
+        return Estatus;
+    }
+
+    public void setEstatus(int Estatus) {
+        this.Estatus = Estatus;
+    }
 
     public String getImagen() {
 
@@ -230,7 +235,6 @@ public class Usuarios {
     public void setImagen(String Imagen) {
 
         this.Imagen = Imagen;
-
     }
 
 }

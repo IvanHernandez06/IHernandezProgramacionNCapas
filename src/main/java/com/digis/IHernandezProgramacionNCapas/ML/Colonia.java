@@ -27,9 +27,16 @@ public class Colonia {
         this.CodigoPostal = colonia.getCodigoPostal();
         this.Nombre = colonia.getNombre();
     }
-    
-    
-   
+//
+//  public Colonia(ColoniaJPA coloniaJPA) {
+//        this.IdColonia = coloniaJPA.getIdColonia();
+//        this.Nombre = coloniaJPA.getNombre();
+//        this.CodigoPostal = coloniaJPA.getCodigoPostal();
+//        
+//        this.Municipio = new Municipio();
+//        this.Municipio.setIdMunicipio(coloniaJPA.Municipio.getIdMunicipio());
+//    }
+//   
     
     
     public int getIdColonia() {

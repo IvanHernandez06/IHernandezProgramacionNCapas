@@ -1,5 +1,6 @@
 package com.digis.IHernandezProgramacionNCapas.JPA;
 
+import com.digis.IHernandezProgramacionNCapas.ML.Direccion;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +15,6 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 
 @Entity(name = "Usuarios")
 public class UsuariosJPA {
@@ -48,19 +48,23 @@ public class UsuariosJPA {
     @Lob
     @Column(name = "imagen")
     private String Imagen;//Agregar imagen
-
+    @Column(name = "estatus")
+    private int Estatus = 1;
+    
     @ManyToOne
     @JoinColumn(name = "idrol")
     public RolJPA RolML;
 
     @OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<DireccionJPA> Direccion = new ArrayList<>();;
+    public List<DireccionJPA> Direccion = new ArrayList<>();
+
+    ;
 
     public UsuariosJPA() {
     }
 
     public UsuariosJPA(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML) {
-        
+
         this.IdUsuario = usuarioML.getIdUsuario();
         this.Username = usuarioML.getUsername();
         this.Nombre = usuarioML.getNombre();
@@ -79,21 +83,23 @@ public class UsuariosJPA {
         this.RolML.setIdRol(usuarioML.RolML.getIdRol());
         this.RolML.setNombre(usuarioML.RolML.getNombre());
 
-        for (com.digis.IHernandezProgramacionNCapas.ML.Direccion Direccione : usuarioML.Direccion) {
-            DireccionJPA direccion = new DireccionJPA();
-            direccion.setCalle(Direccione.getCalle());
-            direccion.setNumInterior(Direccione.getNumInterior());
-            direccion.setNumExterior(Direccione.getNumExterior());
+        if (usuarioML.Direccion.get(0).getIdDireccion() == -1) {
+            usuarioML.Direccion = null;
+        } else {
+            for (Direccion Direccione : usuarioML.Direccion) {
+                DireccionJPA direccion = new DireccionJPA();
+                direccion.setCalle(Direccione.getCalle());
+                direccion.setNumInterior(Direccione.getNumInterior());
+                direccion.setNumExterior(Direccione.getNumExterior());
 
-            direccion.Colonia = new ColoniaJPA();
-            direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
+                direccion.Colonia = new ColoniaJPA();
+                direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
 
-          
-            direccion.Usuario = this;
+                direccion.Usuario = this;
 
-            this.Direccion.add(direccion);
+                this.Direccion.add(direccion);
+            }
         }
-
     }
 
     public int getIdUsuario() {
@@ -207,5 +213,12 @@ public class UsuariosJPA {
     public void setRolML(RolJPA RolML) {
         this.RolML = RolML;
     }
+    
+    public int getEstatus() {
+        return Estatus;
+    }
 
+    public void setEstatus(int Estatus) {
+        this.Estatus = Estatus;
+    }
 }

@@ -18,16 +18,18 @@ public class RolJPADAOImplementation implements IRolJPADAO{
 
     @Override
     public Result GetAll() {
-        Result result = new Result();
+         Result result = new Result();
+
         try {
-            TypedQuery<RolJPA> queryRol
-                    = entityManager.createQuery("FROM rol", RolJPA.class);
-            List<RolJPA> roles = queryRol.getResultList();
+            TypedQuery<RolJPA> queryUsuario = entityManager.createQuery("FROM Rol", RolJPA.class);
+            List<RolJPA> roles = queryUsuario.getResultList();
 
             result.objects = new ArrayList<>();
+
             for (RolJPA rol : roles) {
-                result.objects.add(new RolML(rol));
+                result.objects.add(new com.digis.IHernandezProgramacionNCapas.ML.RolML(rol));
             }
+
             result.correct = true;
         } catch (Exception e) {
             result.e = e;

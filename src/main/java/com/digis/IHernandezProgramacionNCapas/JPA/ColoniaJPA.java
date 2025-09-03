@@ -25,6 +25,12 @@ public class ColoniaJPA {
 
     public ColoniaJPA() {
     }
+     public ColoniaJPA(int IdColonia, String CodigoPostal, String Nombre, MunicipioJPA Municipio) {
+        this.IdColonia = IdColonia;
+        this.CodigoPostal = CodigoPostal;
+        this.Nombre = Nombre;
+        this.Municipio = Municipio;
+    }
 
     public int getIdColonia() {
         return IdColonia;

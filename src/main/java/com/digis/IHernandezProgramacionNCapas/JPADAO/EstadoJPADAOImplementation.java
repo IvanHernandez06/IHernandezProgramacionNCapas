@@ -18,34 +18,21 @@ public class EstadoJPADAOImplementation implements IEstadoJPADAO{
     EntityManager entityManager;
 
     @Override
-    public Result GetAll() {
-        Result result = new Result();
+    public Result GetAll(int IdPais) {
+     Result result = new Result();
 
         try {
-            TypedQuery<EstadoJPA> queryEstado
-                    = entityManager.createQuery("FROM estado", EstadoJPA.class);
-            List<EstadoJPA> estados = queryEstado.getResultList();
+            TypedQuery<EstadoJPA> queryEstados = entityManager.createQuery("FROM Estado where Pais.IdPais = :IdPais ", EstadoJPA.class);
+            queryEstados.setParameter("IdPais", IdPais);
+            List<EstadoJPA> estados = queryEstados.getResultList();
+
             result.objects = new ArrayList<>();
+
             for (EstadoJPA estado : estados) {
                 result.objects.add(new Estado(estado));
             }
+
             result.correct = true;
-        } catch (Exception e) {
-            result.e = e;
-            result.errorMenssage = e.getLocalizedMessage();
-            result.correct = false;
-        }
-        return result;
-    }
-    
-    
-    
-
-    @Override
-      public Result GetByIdPais(int idPais) {
-        Result result = new Result();
-
-        try {
 
         } catch (Exception e) {
             result.e = e;
@@ -54,5 +41,5 @@ public class EstadoJPADAOImplementation implements IEstadoJPADAO{
         }
         return result;
     }
-    
+  
 }

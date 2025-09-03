@@ -6,8 +6,5 @@ import com.digis.IHernandezProgramacionNCapas.ML.Result;
 
 public interface IMunicipioJPADAO {
     
-    Result GetAll();
-
-    Result GetByIdEstado(int IdEstado);
-    
+    Result GetAll(int IdEstado);
 }

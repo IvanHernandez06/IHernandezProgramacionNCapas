@@ -5,6 +5,8 @@ import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
 import com.digis.IHernandezProgramacionNCapas.ML.Direccion;
 public interface IDireccionJPADAO {
     
+    Result GetById(int idDireccion);
+    
     Result update(Usuarios usuarioML);
     
     Result Add(Usuarios usuario);

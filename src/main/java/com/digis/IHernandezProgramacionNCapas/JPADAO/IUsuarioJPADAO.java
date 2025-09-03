@@ -1,8 +1,8 @@
 
 package com.digis.IHernandezProgramacionNCapas.JPADAO;
 
-import com.digis.IHernandezProgramacionNCapas.DAO.*;
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
+import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
 
 
 public interface IUsuarioJPADAO {
@@ -14,10 +14,9 @@ public interface IUsuarioJPADAO {
     
     Result Delete (int IdUsuario);
     
+    Result GetOne(int idUsuario);
     
-//    Result Update(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML);
-//
-//    Result GetById(int IdUsuario);
-      
-//    Result LogicalDelete(int IdUser);
+    Result Update(Usuarios usuarioML);
+
+    Result BajaLogica(int IdUsuario);
 }

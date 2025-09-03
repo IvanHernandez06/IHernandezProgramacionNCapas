@@ -21,7 +21,7 @@ public class PaisJPADAOImplementation implements IPaisJPADAO {
         Result result = new Result();
         try {
             TypedQuery<PaisJPA> paisQuery
-                    = entityManager.createQuery("FROM pais", PaisJPA.class);
+                    = entityManager.createQuery("FROM Pais", PaisJPA.class);
             List<PaisJPA> paises = paisQuery.getResultList();
             result.objects = new ArrayList<>();
             for (PaisJPA pais : paises) {

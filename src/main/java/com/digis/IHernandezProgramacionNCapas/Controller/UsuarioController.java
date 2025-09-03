@@ -7,6 +7,12 @@ import com.digis.IHernandezProgramacionNCapas.DAO.MunicipioDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.PaisDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.RolDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.UsuarioDAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.JPADAO.ColoniaJPADAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.JPADAO.DireccionJPADAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.JPADAO.EstadoJPADAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.JPADAO.MunicipioJPADAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.JPADAO.PaisJPADAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.JPADAO.RolJPADAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.JPADAO.UsuarioJPADAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.ML.Colonia;
 import com.digis.IHernandezProgramacionNCapas.ML.Direccion;
@@ -48,18 +54,36 @@ public class UsuarioController {
     private UsuarioDAOImplementation usuarioDAOImplementation;
     @Autowired
     private UsuarioJPADAOImplementation usuarioJPADAOImplementation;
-    @Autowired
-    private DireccionDAOImplementation direccionDAOImplentation;
+
     @Autowired
     private RolDAOImplementation rolDAOImplementation;
     @Autowired
+    private RolJPADAOImplementation rolJPADAOImplementation;
+
+    @Autowired
+    private DireccionDAOImplementation direccionDAOImplentation;
+    @Autowired
+    DireccionJPADAOImplementation direccionJPADAOImplementation;
+
+    @Autowired
     private PaisDAOImplementation paisDAOImplementation;
+    @Autowired
+    private PaisJPADAOImplementation paisJPADAOImplementation;
+
     @Autowired
     private EstadoDAOImplementation estadoDAOImplementation;
     @Autowired
+    private EstadoJPADAOImplementation estadoJPADAOImplementation;
+
+    @Autowired
     private MunicipioDAOImplementation municipioDAOImplementation;
     @Autowired
+    private MunicipioJPADAOImplementation municipioJPADAOimplementation;
+
+    @Autowired
     private ColoniaDAOImplementation coloniaDAOImplementation;
+    @Autowired
+    private ColoniaJPADAOImplementation coloniaJPADAOImplementation;
 
     @GetMapping
     public String Index(Model model) {
@@ -90,9 +114,11 @@ public class UsuarioController {
     public String add(@PathVariable("idUsuario") int idUsuario, Model model) {
 
         if (idUsuario == 0) {
-            model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+            //
+//            model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+            model.addAttribute("Roles", rolJPADAOImplementation.GetAll().objects);
 
-            model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
+            model.addAttribute("Paises", paisJPADAOImplementation.GetAll().objects);
 
             model.addAttribute("Usuario", new Usuarios());
 
@@ -115,7 +141,7 @@ public class UsuarioController {
             @RequestParam(required = false) Integer idDireccion,
             Model model) {
 
-        if (idDireccion == -1) {
+        if (idDireccion == null) {
 //            Editar Usuario\
 //            Usuarios usuario = new Usuarios();
 //            usuario.setIdUsuario(idUsuario);
@@ -126,17 +152,25 @@ public class UsuarioController {
 //
 //            model.addAttribute("Usuario", usuario);
 
-            Result result = usuarioDAOImplementation.GetId(idUsuario);
+//            Result result = usuarioDAOImplementation.GetId(idUsuario);
+            Result result = usuarioJPADAOImplementation.GetOne(idUsuario);
+
+            Usuarios usuarioML = (Usuarios) result.object;
+//            usuarioML.setSexo(usuarioML.getSexo().trim());
+            usuarioML.Direccion = new ArrayList<>();
+            Direccion dir = new Direccion();
+            dir.setIdDireccion(-1);
+            usuarioML.Direccion = new ArrayList<>();
+            usuarioML.Direccion.add(dir);
 
             if (result.correct) {
                 model.addAttribute("Usuario", result.object);
-                model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+                // model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+                model.addAttribute("Roles", rolJPADAOImplementation.GetAll().objects);
 
             } else {
                 model.addAttribute("Usuario", null);
             }
-
-            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
 
         } else if (idDireccion == 0) {
 //            Agregar nueva dirección a usuario existente
@@ -185,8 +219,10 @@ public class UsuarioController {
             }
 
         }
-        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
-        model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
+        //model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+        model.addAttribute("Roles", rolJPADAOImplementation.GetAll().objects);
+
+        model.addAttribute("Paises", paisJPADAOImplementation.GetAll().objects);
         return "usuarioForm";
 
     }
@@ -199,7 +235,7 @@ public class UsuarioController {
 
         if (usuario.getIdUsuario() == 0) {
 
-            if (imagen != null) {
+            if (imagen != null  && !imagen.isEmpty()) {
                 String nombre = imagen.getOriginalFilename();
 
                 String extension = nombre.split("\\.")[1];
@@ -220,15 +256,16 @@ public class UsuarioController {
             return "redirect:/Usuario";
         }
 
-        if (usuario.getIdUsuario() > 0) {
+        if (usuario.getIdUsuario() > 0 ) {
             if (usuario.Direccion.get(0).getIdDireccion() == -1) { //Editar usuario
 
                 model.addAttribute("Usuario", usuario);
 
                 //Volver a pintar la lista de roles
-                model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+                //model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+                model.addAttribute("Roles", rolJPADAOImplementation.GetAll().objects);
 
-                if (imagen != null) {
+                if (imagen != null  && !imagen.isEmpty()) {
                     String nombre = imagen.getOriginalFilename();
                     //archivo.jpg
                     //[archivo,jpg]
@@ -247,8 +284,8 @@ public class UsuarioController {
 
                 //Autoinferencia
                 //Result result = usuarioDAOImplementation.EditarUsuario(usuario);
-//                Result result = usuarioJPADAOImplementation.EditarUsuario(usuario);
-                return "redirect:/usuario";
+                Result result = usuarioJPADAOImplementation.Update(usuario);
+                return "redirect:/Usuario";
                 //}
 
             } else if (usuario.Direccion.get(0).getIdDireccion() == 0) { //Agregar direccion
@@ -285,7 +322,8 @@ public class UsuarioController {
             @PathVariable("IdDireccion") int IdDireccion) {
 
         // Lógica para eliminar la dirección
-        Result result = direccionDAOImplentation.EliminarDireccion(IdDireccion);
+//        Result result = direccionDAOImplentation.EliminarDireccion(IdDireccion);
+        Result result = direccionJPADAOImplementation.Delete(IdDireccion);
 
         return "redirect:/Usuario/action/" + IdUsuario;
     }
@@ -293,39 +331,47 @@ public class UsuarioController {
     @GetMapping("deleteUser/{IdUsuario}")
     public String Delete(@PathVariable("IdUsuario") int IdUsuario) {
 
-//        Result result =usuarioDAOImplementation.Delete(IdUsuario);s
+//      Result result =usuarioDAOImplementation.Delete(IdUsuario);s
         Result result = usuarioJPADAOImplementation.Delete(IdUsuario);
 
         return "redirect:/Usuario";
     }
-    
-    
 
     @RequestMapping("getDireccionById")
     @ResponseBody
     public Result mostrarDireccion(@RequestParam("idDireccion") int IdDireccion, Model model) {
         return direccionDAOImplentation.GetId(IdDireccion);
+//        return direccionJPADAOImplementation.GetById(IdDireccion);
     }
 
     @GetMapping("getEstadosByIdPais/{IdPais}")
     @ResponseBody // retorne un dato estructurado - JSON
     public Result EstadoByPais(@PathVariable int IdPais) {
-        return estadoDAOImplementation.GetAll(IdPais);
+//        return estadoDAOImplementation.GetAll(IdPais);
+        return estadoJPADAOImplementation.GetAll(IdPais);
     }
 
     @GetMapping("getMunicipiosByIdEstados/{IdEstado}")
     @ResponseBody // retorne un dato estructurado - JSON
     public Result MunicipioByEstado(@PathVariable int IdEstado
     ) {
-        return municipioDAOImplementation.GetAll(IdEstado);
+//        return municipioDAOImplementation.GetAll(IdEstado);
+        return municipioJPADAOimplementation.GetAll(IdEstado);
     }
 
     @GetMapping("getColoniasByIdMunicipios/{IdMunicipio}")
     @ResponseBody // retorne un dato estructurado - JSON
     public Result ColoniaByMunicipio(@PathVariable int IdMunicipio
     ) {
-        return coloniaDAOImplementation.GetAll(IdMunicipio);
+//        return coloniaDAOImplementation.GetAll(IdMunicipio);
+        return coloniaJPADAOImplementation.GetAll(IdMunicipio);
     }
+      @GetMapping("/cambiarEstado/{IdUsuario}")
+    @ResponseBody
+    public Result cambiarEstado(@PathVariable int IdUsuario) {
+        
+        return usuarioJPADAOImplementation.BajaLogica(IdUsuario);
+    } 
 
     @GetMapping("cargamasiva")
     public String CargaMasiva() {

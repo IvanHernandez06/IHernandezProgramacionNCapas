@@ -56,23 +56,35 @@
                 <table class="table table-hover">
                     <thead class="table-dark">
                     <th class="col-1"></th>
+                    <th class="col-1">Estatus</th>
                     <th class="col-1">Image</th>
                     <th class="col-2">Nombre</th>
-                    <th class="col-5">Contacto</th>
+                    <th class="col-4">Contacto</th>
                     <th class="col-4">Dirección</th>
                     </thead>
                     <tbody>
                         <tr  th:each="usuarios : ${usuarios}">
                             <td>
-                                
-                                
+
+
                                 <a th:href="@{/Usuario/action/{idUsuario}(idUsuario = ${usuarios.idUsuario})}"
                                    class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
 
                                 <a th:href="@{/Usuario/deleteUser/{idUsuario}(idUsuario = ${usuarios.idUsuario})}"
                                    class="btn btn-danger">
-                                    
+
                                     <i class="bi bi-trash3-fill"></i></a></td>
+
+
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" 
+                                           type="checkbox" id="switch-bajalogica" 
+                                           role="switch" th:attr="data-id=${usuarios.idUsuario}" 
+                                           th:checked="${usuarios.estatus}"  onchange="bajaLogica(this)" >
+
+                                </div>
+                            </td>
 
 
                             <td>
@@ -109,10 +121,30 @@
                                     Sin dirección registrada
                                 </div>
                             </td>
+
+
+
                         </tr>
                     </tbody>
                 </table>
 
         </div>
+
+        <script>
+            function bajaLogica(element) {
+                let idUsuario = $(element).data("id");
+                console.log(idUsuario);
+                element.disabled = true; //Desabilita el boton mientras la peticion se procesa
+                $.ajax({
+                    url: "/Usuario/cambiarEstado/" + idUsuario,
+                    type: "GET",
+                    success: function () {
+                        //alert("dato mandado");
+                        element.disabled = false; //Habilita el boton, una vez procesada la peticion
+                    }
+                });
+            }
+        </script>
+
     </body>
 </html>

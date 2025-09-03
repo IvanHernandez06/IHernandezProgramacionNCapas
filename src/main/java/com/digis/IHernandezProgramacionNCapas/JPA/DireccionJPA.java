@@ -1,5 +1,7 @@
 package com.digis.IHernandezProgramacionNCapas.JPA;
 
+import com.digis.IHernandezProgramacionNCapas.ML.Colonia;
+import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,7 +34,7 @@ public class DireccionJPA {
     public DireccionJPA() {
     }
 
-    public DireccionJPA(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML) {
+    public DireccionJPA(Usuarios usuarioML) {
 
 //      usuarioML.Direcciones.get(0) -> DireccionJPA ML
         com.digis.IHernandezProgramacionNCapas.ML.Direccion direccionML= usuarioML.Direccion.get(0);
@@ -47,7 +49,20 @@ public class DireccionJPA {
         this.Usuario.setIdUsuario(usuarioML.getIdUsuario());
 
     }
+    
+    
+    
+    
+    
+    public DireccionJPA(int IdDireccion, String Calle, String NumeroInterior, String NumeroExterior, ColoniaJPA Colonia) {
+        this.IdDireccion = IdDireccion;
+        this.Calle = Calle;
+        this.NumInterior = NumeroInterior;
+        this.NumExterior = NumeroExterior;
+        this.Colonia = Colonia;
+    }
 
+    
     public int getIdDireccion() {
         return IdDireccion;
     }
@@ -80,4 +95,11 @@ public class DireccionJPA {
         this.NumExterior = NumExterior;
     }
 
+    public ColoniaJPA getColonia() {
+        return Colonia;
+    }
+
+    public void setColonia(ColoniaJPA Colonia) {
+        this.Colonia = Colonia;
+    }
 }

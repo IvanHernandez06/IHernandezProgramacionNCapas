@@ -1,5 +1,7 @@
 package com.digis.IHernandezProgramacionNCapas.ML;
 
+import com.digis.IHernandezProgramacionNCapas.JPA.DireccionJPA;
+
 public class Direccion {
 
     private int IdDireccion;
@@ -12,14 +14,31 @@ public class Direccion {
 
     public Direccion() {
     }
-    
-    
-    //recibe el menos 1
-    public Direccion(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+    public Direccion(int IdDireccion, String Calle, String NumInterior, String NumExterior) {
+        this.IdDireccion = IdDireccion;
+        this.Calle = Calle;
+        this.NumInterior = NumInterior;
+        this.NumExterior = NumExterior;
     }
     
     
+     public Direccion(DireccionJPA direccionJPA) {
+        this.IdDireccion = direccionJPA.getIdDireccion();
+        this.Calle = direccionJPA.getCalle();
+        this.NumInterior = direccionJPA.getNumInterior();
+        this.NumExterior = direccionJPA.getNumExterior();
+        
+        this.Colonia = new Colonia();
+        this.Colonia.Municipio = new Municipio();
+        this.Colonia.Municipio.Estado = new Estado();
+        this.Colonia.Municipio.Estado.Pais = new Pais();
+        this.Colonia.Municipio.setIdMunicipio(direccionJPA.Colonia.Municipio.getIdMunicipio());
+        this.Colonia.setIdColonia(direccionJPA.Colonia.getIdColonia());
+        this.Colonia.Municipio.Estado.setIdEstado(direccionJPA.Colonia.Municipio.Estado.getIdEstado());
+        this.Colonia.Municipio.Estado.Pais.setIdPais(direccionJPA.Colonia.Municipio.Estado.Pais.getIdPais());
+        this.Colonia.setCodigoPostal(direccionJPA.Colonia.getCodigoPostal());
+    }
 
     public int getIdDireccion() {
         return IdDireccion;
@@ -64,5 +83,11 @@ public class Direccion {
     public void setIdUsuario(int aInt) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+    
+    //recibe el menos 1
+    public Direccion(int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
+   
 }
