@@ -7,14 +7,13 @@ import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
 
 public interface IUsuarioJPADAO {
     
-    Result GetAll();
+    Result GetAll();//
     
-    Result Add(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML);
+    Result Add(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML);//
     
+    Result Delete(int IdUsuario);//
     
-    Result Delete (int IdUsuario);
-    
-    Result GetOne(int idUsuario);
+    Result GetDetail(int idUsuario);//
     
     Result Update(Usuarios usuarioML);
 

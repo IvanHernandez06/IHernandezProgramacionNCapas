@@ -151,7 +151,7 @@
                                     <tr>
                                         <td><strong>Rol</strong></td>
                                         <td>
-                                            <select class="form-select" aria-label="Default select example" th:field="*{RolML.IdRol}">
+                                            <select class="form-select" aria-label="Default select example" th:field="*{RolML.IdRol}" id="rol">
                                                 <option value=0 selected>   </option>
                                                 <option th:each="rol : ${Roles}" th:text="${rol.nombre}" th:value="${rol.IdRol}"  required>One</option>
                                             </select>
@@ -191,7 +191,7 @@
                                     <tr>
                                         <td><strong>País:</strong></td>
                                         <td>
-                                            <select id="paisddl" class="form-select">
+                                            <select id="paisddl" class="form-select" >
                                                 <option value="0" selected></option>
                                                 <option th:each="pais : ${Paises}" th:text="${pais.nombre}" th:value="${pais.IdPais}" required>One</option>
                                             </select>
@@ -229,11 +229,11 @@
                         </div>
 
 
-<!--
-                        <div class="d-grid gap-2">
-                            <button type="submit"  >Enviar</button>
-                        </div>
--->
+                        <!--
+                                                <div class="d-grid gap-2">
+                                                    <button type="submit"  >Enviar</button>
+                                                </div>
+                        -->
 
 
 
@@ -275,7 +275,7 @@
         </div>
     </div>
 
-
+ 
     <script>
 
         function previewImage() {

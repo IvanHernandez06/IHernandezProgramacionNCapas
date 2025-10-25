@@ -21,28 +21,29 @@ public class RolDAOImplementation implements IRolDAO {
 
         try {
             jdbcTemplate.execute("{CALL RolGetAll(?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
-                
+
                 callableStatement.registerOutParameter(1, java.sql.Types.REF_CURSOR);
-                
+
                 callableStatement.execute();
-                
-                ResultSet resultSet = (ResultSet) callableStatement.getObject(1);  
-                
+
+                ResultSet resultSet = (ResultSet) callableStatement.getObject(1);
+
                 result.objects = new ArrayList<>();
-                
-                while (resultSet.next()) {                    
-                    
+
+                while (resultSet.next()) {
+
                     RolML rol = new RolML(
-                            resultSet.getInt("IdRol"), 
+                            resultSet.getInt("IdRol"),
                             resultSet.getString("Nombre"));
-                    
+
                     result.objects.add(rol);
-                    
+
                 }
-                
-                
+
                 return true;
+
             });
+                result.correct = true;
 
         } catch (Exception e) {
             result.correct = false;
@@ -52,5 +53,4 @@ public class RolDAOImplementation implements IRolDAO {
         return result;
     }
 
-    
 }

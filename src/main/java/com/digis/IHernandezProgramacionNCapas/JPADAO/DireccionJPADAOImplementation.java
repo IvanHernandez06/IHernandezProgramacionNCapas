@@ -85,37 +85,7 @@ public class DireccionJPADAOImplementation implements IDireccionJPADAO {
         }
 
         return result;
-    }
-
-    
-    
-    
-//        @Transactional
-//    @Override
-//    public Result Add(Usuarios usuario) {
-//
-//        Result result = new Result();
-//        try {
-//            DireccionJPA direccionJPA = new DireccionJPA(usuario);
-//            direccionJPA.Usuario = new UsuariosJPA();
-//            direccionJPA.Usuario.setIdUsuario(usuario.getIdUsuario());
-//            
-//            direccionJPA.Colonia = new ColoniaJPA();
-//            
-//            direccionJPA.Colonia.setIdColonia(usuario.Direccion.C
-//                    .getIdColonia());
-//            entityManager.persist(direccionJPA);
-//            result.correct = true;
-//        } catch (Exception ex) {
-//            result.correct = false;
-//            result.e = ex;
-//            result.errorMenssage = ex.getLocalizedMessage();
-//        }
-//        return result;
-//    }
-    
-    
-    
+    }   
     
     @Override
     public Result Update(com.digis.IHernandezProgramacionNCapas.ML.Direccion direccion, int IdDireccion) {

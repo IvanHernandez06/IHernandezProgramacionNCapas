@@ -11,10 +11,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity(name = "Usuarios")
 public class UsuariosJPA {
@@ -24,7 +24,7 @@ public class UsuariosJPA {
     @Column(name = "idusuario")
     private int IdUsuario;
     @Column(name = "username")
-    private String Username;
+    private String username;
     @Column(name = "nombre")
     private String Nombre;
     @Column(name = "apellidopaterno")
@@ -36,6 +36,7 @@ public class UsuariosJPA {
     @Column(name = "password")
     private String Password;
     @Column(name = "fechanacimiento")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date FechaNacimiento;
     @Column(name = "sexo")
     private char Sexo;
@@ -50,7 +51,7 @@ public class UsuariosJPA {
     private String Imagen;//Agregar imagen
     @Column(name = "estatus")
     private int Estatus = 1;
-    
+
     @ManyToOne
     @JoinColumn(name = "idrol")
     public RolJPA RolML;
@@ -66,7 +67,7 @@ public class UsuariosJPA {
     public UsuariosJPA(com.digis.IHernandezProgramacionNCapas.ML.Usuarios usuarioML) {
 
         this.IdUsuario = usuarioML.getIdUsuario();
-        this.Username = usuarioML.getUsername();
+        this.username = usuarioML.getUsername();
         this.Nombre = usuarioML.getNombre();
         this.ApellidoPaterno = usuarioML.getApellidoPaterno();
         this.ApellidoMaterno = usuarioML.getApellidoMaterno();
@@ -111,11 +112,11 @@ public class UsuariosJPA {
     }
 
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     public void setUsername(String Username) {
-        this.Username = Username;
+        this.username = Username;
     }
 
     public String getNombre() {
@@ -213,7 +214,7 @@ public class UsuariosJPA {
     public void setRolML(RolJPA RolML) {
         this.RolML = RolML;
     }
-    
+
     public int getEstatus() {
         return Estatus;
     }

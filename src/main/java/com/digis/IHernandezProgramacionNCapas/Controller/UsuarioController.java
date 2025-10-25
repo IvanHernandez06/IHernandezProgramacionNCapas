@@ -7,6 +7,7 @@ import com.digis.IHernandezProgramacionNCapas.DAO.MunicipioDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.PaisDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.RolDAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.DAO.UsuarioDAOImplementation;
+import com.digis.IHernandezProgramacionNCapas.JPA.UsuariosJPA;
 import com.digis.IHernandezProgramacionNCapas.JPADAO.ColoniaJPADAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.JPADAO.DireccionJPADAOImplementation;
 import com.digis.IHernandezProgramacionNCapas.JPADAO.EstadoJPADAOImplementation;
@@ -20,10 +21,12 @@ import com.digis.IHernandezProgramacionNCapas.ML.ErrorCM;
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
 import com.digis.IHernandezProgramacionNCapas.ML.RolML;
 import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
+import com.digis.IHernandezProgramacionNCapas.RestController.Service.ServiceUsuario;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -54,6 +57,8 @@ public class UsuarioController {
     private UsuarioDAOImplementation usuarioDAOImplementation;
     @Autowired
     private UsuarioJPADAOImplementation usuarioJPADAOImplementation;
+    @Autowired
+    private ServiceUsuario serviceUsuario;
 
     @Autowired
     private RolDAOImplementation rolDAOImplementation;
@@ -84,6 +89,12 @@ public class UsuarioController {
     private ColoniaDAOImplementation coloniaDAOImplementation;
     @Autowired
     private ColoniaJPADAOImplementation coloniaJPADAOImplementation;
+
+    @PostMapping("/UpdateContraseña")
+    @ResponseBody
+    public Result encriptarUsuarios() {
+        return serviceUsuario.UpdateContraseña();
+    }
 
     @GetMapping
     public String Index(Model model) {
@@ -124,7 +135,8 @@ public class UsuarioController {
 
             return "usuarioForm";
         } else {
-            Result result = usuarioDAOImplementation.GetDatail(idUsuario);
+//            Result result = usuarioDAOImplementation.GetDatail(idUsuario);
+            Result result = usuarioJPADAOImplementation.GetDetail(idUsuario);
 
             if (result.correct) {
                 model.addAttribute("usuario", result.object);
@@ -142,21 +154,10 @@ public class UsuarioController {
             Model model) {
 
         if (idDireccion == null) {
-//            Editar Usuario\
-//            Usuarios usuario = new Usuarios();
-//            usuario.setIdUsuario(idUsuario);
-//            usuario.setDireccion(new ArrayList<>());
-//            Direccion direccion = new Direccion();
-//            direccion.setIdDireccion(-1);
-//            usuario.getDireccion().add(direccion);
-//
-//            model.addAttribute("Usuario", usuario);
 
-//            Result result = usuarioDAOImplementation.GetId(idUsuario);
-            Result result = usuarioJPADAOImplementation.GetOne(idUsuario);
+            Result result = usuarioJPADAOImplementation.GetDetail(idUsuario);
 
             Usuarios usuarioML = (Usuarios) result.object;
-//            usuarioML.setSexo(usuarioML.getSexo().trim());
             usuarioML.Direccion = new ArrayList<>();
             Direccion dir = new Direccion();
             dir.setIdDireccion(-1);
@@ -188,12 +189,7 @@ public class UsuarioController {
 
             model.addAttribute("Usuario", usuario);
 
-//            Usuarios usuario = new Usuarios();
-//            usuario.setIdUsuario(idUsuario);
-//            usuario.setDireccion(new ArrayList<>());
-//            Direccion direccion = new Direccion();
-//
-//            model.addAttribute("Usuario", usuario);
+
         } else {
 //            Editar dirección existente
 
@@ -229,13 +225,14 @@ public class UsuarioController {
 
     @PostMapping("usuarioForm") // localhost:8081/alumno/add
     public String Add(@ModelAttribute Usuarios usuario,
+            @ModelAttribute UsuariosJPA usuarioJPA,
             Model model,
             @RequestParam(name = "imagenFile", required = false) MultipartFile imagen,
             RedirectAttributes redirectAttributes) {
 
         if (usuario.getIdUsuario() == 0) {
 
-            if (imagen != null  && !imagen.isEmpty()) {
+            if (imagen != null && !imagen.isEmpty()) {
                 String nombre = imagen.getOriginalFilename();
 
                 String extension = nombre.split("\\.")[1];
@@ -256,7 +253,7 @@ public class UsuarioController {
             return "redirect:/Usuario";
         }
 
-        if (usuario.getIdUsuario() > 0 ) {
+        if (usuario.getIdUsuario() > 0) {
             if (usuario.Direccion.get(0).getIdDireccion() == -1) { //Editar usuario
 
                 model.addAttribute("Usuario", usuario);
@@ -265,7 +262,7 @@ public class UsuarioController {
                 //model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
                 model.addAttribute("Roles", rolJPADAOImplementation.GetAll().objects);
 
-                if (imagen != null  && !imagen.isEmpty()) {
+                if (imagen != null && !imagen.isEmpty()) {
                     String nombre = imagen.getOriginalFilename();
                     //archivo.jpg
                     //[archivo,jpg]
@@ -366,12 +363,13 @@ public class UsuarioController {
 //        return coloniaDAOImplementation.GetAll(IdMunicipio);
         return coloniaJPADAOImplementation.GetAll(IdMunicipio);
     }
-      @GetMapping("/cambiarEstado/{IdUsuario}")
+
+    @GetMapping("/cambiarEstado/{IdUsuario}")
     @ResponseBody
     public Result cambiarEstado(@PathVariable int IdUsuario) {
-        
+
         return usuarioJPADAOImplementation.BajaLogica(IdUsuario);
-    } 
+    }
 
     @GetMapping("cargamasiva")
     public String CargaMasiva() {
@@ -605,11 +603,13 @@ public class UsuarioController {
 //                ErrorCM errorCM = new ErrorCM(linea, usuario.getPassword(), "La password tiene un campo erroneo, esta vacio o no contiene los requisitos(minimo 8 caracteres,un especial,una mayuscula)");
 //                errores.add(errorCM);
 //            }
-            //Formato de fecha
-//            if (usuario.getFechaNacimiento() == null || usuario.getFechaNacimiento() == "" || !usuario.getFechaNacimiento().matches("^\\d{4}/\\d{2}/\\d{2}$")) {
-//                ErrorCM errorCM = new ErrorCM(linea, usuario.getFechaNacimiento(), "La Fecha de Nacimiento tiene un campo erroneo, esta vacio o su formato esta mal YYYY/MM/DD");
-//                errores.add(errorCM);
-//            }
+            String fechaStr = usuario.getFechaNacimiento() == null ? "" : new SimpleDateFormat("yyyy-MM-dd").format(usuario.getFechaNacimiento());
+            //  Formato de fecha
+            if (usuario.getFechaNacimiento() == null) {
+                ErrorCM errorCM = new ErrorCM(linea, fechaStr, "La Fecha de Nacimiento tiene un campo erroneo, esta vacia o formato invalido");
+                errores.add(errorCM);
+            }
+
             //Comparacion con Apellidos Nombre y Fecha
             if (usuario.getCurp() == null || usuario.getCurp() == "") {
                 ErrorCM errorCM = new ErrorCM(linea, usuario.getCurp(), "La curp tiene un campo erroneo, esta vacio o no tiene relacion con sus datos ya registrados");

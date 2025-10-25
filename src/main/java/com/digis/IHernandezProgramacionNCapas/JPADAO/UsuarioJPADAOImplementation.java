@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,6 +17,9 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;  // Inyectamos PasswordEncoder
 
     @Override
     public Result GetAll() {
@@ -56,7 +60,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
         try {
 
             UsuariosJPA usuarioJPA = new UsuariosJPA(usuarioML);
-
+            usuarioJPA.setPassword(passwordEncoder.encode(usuarioJPA.getPassword()));
             entityManager.persist(usuarioJPA);
 
         } catch (Exception e) {
@@ -68,7 +72,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
     }
 
     @Override
-    public Result GetOne(int idUsuario) {
+    public Result GetDetail(int idUsuario) {
         Result result = new Result();
         try {
             UsuariosJPA usuarioJPA = entityManager.find(UsuariosJPA.class, idUsuario);
@@ -101,7 +105,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
 
         return result;
     }
-    
+
     @Transactional
     @Override
     public Result Update(Usuarios usuarioML) {
@@ -121,25 +125,24 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
         return result;
     }
 
-    
-      @Transactional
+    @Transactional
     @Override
     public Result BajaLogica(int IdUsuario) {
         Result result = new Result();
-        
+
         try {
-            
+
             UsuariosJPA usuarioJPA = entityManager.find(UsuariosJPA.class, IdUsuario);
             usuarioJPA.setEstatus(usuarioJPA.getEstatus() == 1 ? 0 : 1);
             entityManager.merge(usuarioJPA);
 
-            
+            result.correct = true;
         } catch (Exception e) {
             result.correct = false;
             result.errorMenssage = e.getLocalizedMessage();
             result.e = e;
         }
-        
+
         return result;
     }
 }

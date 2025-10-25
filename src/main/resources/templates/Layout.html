@@ -8,7 +8,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
- 
+
         <style>
             /* Asegura que el contenido ocupe toda la altura de la página */
             html, body {
@@ -38,15 +38,20 @@
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page"  href="/Usuario/cargamasiva">Carga Masiva</a>
+                            <a sec:authorize="hasAnyRole('ADMIN')"  class="nav-link active" aria-current="page"  href="/Usuario/cargamasiva">Carga Masiva</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <form id="formEncriptar" th:action="@{/Usuario/UpdateContraseña}" method="post">
+                                <button  onclick="encriptarUsuarios()" class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN')">
+                                    Encriptar
+                                </button>
+                            </form>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                        </li>
+
                     </ul>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
                         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -59,6 +64,26 @@
 
     <body layout:fragment="body">
         <div>TODO write content</div>
+        <script>
+            function encriptarUsuarios() {
+                $.ajax({
+                    url: '/Usuario/UpdateContrasenia',
+                    type: 'POST',
+                    success: function (response) {
+                        alert(response.mensaje); 
+                    },
+                    error: function (xhr) {
+                        alert("Ocurrió un error al actualizar la contraseña.");
+                    }
+                });
+                return false; 
+            }
+        </script>
+
+
+
+
     </body>
     <footer>@Digis01 Soluciones Digitales</footer>
+
 </html>

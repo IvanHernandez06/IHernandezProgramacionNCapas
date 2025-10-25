@@ -6,6 +6,6 @@ public interface IPaisJPADAO {
    
 Result GetAll(); 
 
-    @Override
-    public boolean equals(Object obj);
+//    @Override
+//    public boolean equals(Object obj);
 }

@@ -8,6 +8,7 @@ import com.digis.IHernandezProgramacionNCapas.ML.Pais;
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
 import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -316,7 +317,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         callablestatement.setString(6, usuario.getEmail());
                         callablestatement.setString(7, usuario.getPassword());
 
-//                        callablestatement.setString(8, usuario.getFechaNacimiento());
+                        callablestatement.setString(8, new SimpleDateFormat("yyyy-MM-dd").format(usuario.getFechaNacimiento()));
                         callablestatement.setString(9, String.valueOf(usuario.getSexo()));
                         callablestatement.setString(10, usuario.getTelefono());
                         callablestatement.setString(11, usuario.getCelular());
@@ -328,14 +329,8 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                         callablestatement.setString(16, usuario.Direccion.get(0).getNumExterior());
                         callablestatement.setInt(17, usuario.Direccion.get(0).Colonia.getIdColonia());
 
-                        int isCorrect = callablestatement.executeUpdate();
-
-                        if (isCorrect == -1) {
-
-                            return true;
-                        }
-
-                        return false;
+                        callablestatement.executeUpdate();
+                        return true;
                     });
 
         } catch (Exception e) {
@@ -366,7 +361,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
 
                             usuario.setIdUsuario(resultSet.getInt("IdUsuario"));
                             usuario.setUsername(resultSet.getString("Username"));
-                            usuario.setNombre(resultSet.getString("Nombre"));
+                            usuario.setNombre(resultSet.getString("NombreUsuario"));
                             usuario.setApellidoPaterno(resultSet.getString("ApellidoPaterno"));
                             usuario.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
                             usuario.setEmail(resultSet.getString("Email"));
@@ -390,7 +385,7 @@ public class UsuarioDAOImplementation implements IUsuarioDAO {
                     });
 
         } catch (Exception e) {
-            result.correct = false;
+             result.correct = false;
             result.errorMenssage = e.getLocalizedMessage();
             result.e = e;
         }

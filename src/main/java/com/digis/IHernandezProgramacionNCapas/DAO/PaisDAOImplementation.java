@@ -45,6 +45,7 @@ public class PaisDAOImplementation implements IPais {
                 
                 return true;
             });
+                            result.correct = true;
 
         } catch (Exception e) {
             result.correct= true;
