@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Confirmación de Postulación</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f6f8;
+                color: #333;
+            }
+            .container {
+                max-width: 600px;
+                margin: 40px auto;
+                background-color: #ffffff;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+                text-align: center;
+            }
+            .logo img {
+                max-width: 150px;
+                margin-bottom: 20px;
+            }
+            h2 {
+                color: #0057b8;
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            p {
+                font-size: 16px;
+                line-height: 1.6;
+                color: #555;
+                margin-bottom: 20px;
+            }
+            .cta-button {
+                display: inline-block;
+                padding: 12px 25px;
+                background-color: #0057b8;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+                margin-top: 10px;
+            }
+            .cta-button:hover {
+                background-color: #0046a0;
+            }
+            .footer {
+                font-size: 13px;
+                color: #888;
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid #eaeaea;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=LOGO" alt="Logo de la empresa">
+            </div>
+
+            <h2>¡Registro exitoso!</h2>
+            <p>Hola <strong th:text="|${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}|">Nombre de Usuario</strong>,</p>
+            <p>Tu cuenta ha sido creada exitosamente en nuestro sitio web.</p>
+            <p>Para comenzar a usar tu cuenta, haz clic en el botón de abajo:</p>
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                <tr>
+                    <td align="center" bgcolor="#0057b8" style="border-radius: 5px;">
+                        <a th:href="@{${enlace}}" target="_blank" style="display: inline-block; padding: 12px 25px; font-family: 'Segoe UI', sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; font-weight: bold;">
+                            Continuar a mi cuenta
+                        </a>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="footer">
+                <p>Este correo fue generado automáticamente. No respondas a este mensaje.</p>
+            </div>
+        </div>
+    </body>
+</html>

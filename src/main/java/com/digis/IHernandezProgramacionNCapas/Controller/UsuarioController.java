@@ -21,7 +21,8 @@ import com.digis.IHernandezProgramacionNCapas.ML.ErrorCM;
 import com.digis.IHernandezProgramacionNCapas.ML.Result;
 import com.digis.IHernandezProgramacionNCapas.ML.RolML;
 import com.digis.IHernandezProgramacionNCapas.ML.Usuarios;
-import com.digis.IHernandezProgramacionNCapas.RestController.Service.ServiceUsuario;
+import com.digis.IHernandezProgramacionNCapas.Service.ServiceEmail;
+import com.digis.IHernandezProgramacionNCapas.Service.ServiceUsuario;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.File;
@@ -59,6 +60,8 @@ public class UsuarioController {
     private UsuarioJPADAOImplementation usuarioJPADAOImplementation;
     @Autowired
     private ServiceUsuario serviceUsuario;
+    @Autowired
+    private ServiceEmail emailServer;
 
     @Autowired
     private RolDAOImplementation rolDAOImplementation;
@@ -189,7 +192,6 @@ public class UsuarioController {
 
             model.addAttribute("Usuario", usuario);
 
-
         } else {
 //            Editar dirección existente
 
@@ -249,8 +251,22 @@ public class UsuarioController {
                     }
                 }
             }
-            Result result = usuarioJPADAOImplementation.Add(usuario);
-            return "redirect:/Usuario";
+
+            try {
+
+                Result result = usuarioJPADAOImplementation.Add(usuario);
+                if (result.correct) {
+
+                    emailServer.sendEmail(usuario);
+                    return "redirect:/Usuario";
+                } else {
+                    return "Error";
+                }
+
+            } catch (Exception e) {
+                model.addAttribute("message", "Error al enviar el correo: " + e.getMessage());
+            }
+
         }
 
         if (usuario.getIdUsuario() > 0) {

@@ -27,6 +27,8 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(configurer -> configurer
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/RecuperarContraseña").permitAll()
+                .requestMatchers("/RecuperarContraseña/**").permitAll() // POST si hay subrutas
+                .requestMatchers("/email").hasRole("ADMIN")
                 .requestMatchers("/Usuario/cargamasiva").hasRole("ADMIN")
                 .requestMatchers("/Usuario/action/0").hasRole("ADMIN")
                 .requestMatchers("/Usuario/**").hasAnyRole("ADMIN", "USER")

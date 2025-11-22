@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Iniciar sesión</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <style>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Iniciar sesión</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <style>
             *{
                 margin: 0;
                 padding: 0;
@@ -219,36 +219,56 @@
             .box form .action-buttons a:hover {
                 color: #fff;
             }
+            .mensaje-exito {
+                color: #4CAF50;
+                text-align: center;
+                margin-top: 10px;
+                font-weight: bold;
+            }
+
+            .mensaje-error {
+                color: #f44336;
+                text-align: center;
+                margin-top: 10px;
+                font-weight: bold;
+            }
+
 
         </style>
-</head>
-<body>
-    <div class="box">
-        <span class="borderLine"></span>
-        <form th:action="@{/login}" method="post">
-            <h2>Iniciar sesión</h2>
-            <div class="inputBox">
-                <input type="text" name="username" required />
-                <span>Usuario</span>
-                <i></i>
-            </div>
-            <div class="inputBox">
-                <input type="password" name="password" required />
-                <span>Contraseña</span>
-                <i></i>
-            </div>
-            <div class="action-buttons">
-                <a href="/RecuperarContraseña">Recuperar contraseña</a>
-            </div>
-            <input type="submit" id="submit" value="Ingresar" />
-           
-            <div th:if="${param.error}">
-                <p style="color:red;">Credenciales inválidas</p>
-            </div>
-            <div th:if="${param.logout}">
-                <p style="color:green;">Sesión cerrada exitosamente</p>
-            </div>   
-        </form>
-    </div>
-</body>
+    </head>
+    <body>
+        <div class="box">
+            <span class="borderLine"></span>
+            <form th:action="@{/login}" method="post">
+                <h2>Iniciar sesión</h2>
+                <div class="inputBox">
+                    <input type="text" name="username" required />
+                    <span>Usuario</span>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    <input type="password" name="password" required />
+                    <span>Contraseña</span>
+                    <i></i>
+                </div>
+                <div class="action-buttons">
+                    <a href="/RecuperarContraseña">Recuperar contraseña</a>
+                </div>
+                <input type="submit" id="submit" value="Ingresar" />
+
+                <div th:if="${param.error}">
+                    <p style="color:red;">Credenciales inválidas</p>
+                </div>
+                <div th:if="${param.logout}">
+                    <p style="color:green;">Sesión cerrada exitosamente</p>
+                </div>   
+
+                <div th:if="${mensaje}">
+                    <p th:text="${mensaje}"
+                       th:classappend="${tipoMensaje == 'success'} ? 'mensaje-exito' : 'mensaje-error'"></p>
+                </div>
+
+            </form>
+        </div>
+    </body>
 </html>

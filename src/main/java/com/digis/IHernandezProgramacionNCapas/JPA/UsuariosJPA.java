@@ -50,7 +50,7 @@ public class UsuariosJPA {
     @Column(name = "imagen")
     private String Imagen;//Agregar imagen
     @Column(name = "estatus")
-    private int Estatus = 1;
+    private int Estatus = 0;
 
     @ManyToOne
     @JoinColumn(name = "idrol")

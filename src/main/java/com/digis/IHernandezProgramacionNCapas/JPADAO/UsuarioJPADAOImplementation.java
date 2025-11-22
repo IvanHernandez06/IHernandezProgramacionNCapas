@@ -62,7 +62,9 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPADAO {
             UsuariosJPA usuarioJPA = new UsuariosJPA(usuarioML);
             usuarioJPA.setPassword(passwordEncoder.encode(usuarioJPA.getPassword()));
             entityManager.persist(usuarioJPA);
-
+            result.correct = true;
+            entityManager.flush();
+            usuarioML.setIdUsuario(usuarioJPA.getIdUsuario());
         } catch (Exception e) {
             result.correct = false;
             result.errorMenssage = e.getLocalizedMessage();
